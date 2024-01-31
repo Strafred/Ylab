@@ -19,7 +19,8 @@ public class InMemoryAuditRepository implements AuditRepository {
         auditRepository.add(username + ": " + message);
     }
 
-    public List<String> getAuditRepository() {
+    @Override
+    public List<String> getAudit() {
         return auditRepository;
     }
 }

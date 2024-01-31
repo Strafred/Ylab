@@ -14,7 +14,7 @@ public class InMemoryAuditRepositoryTest {
 
         inMemoryAuditRepository.saveAudit(username, message);
 
-        assertThat(inMemoryAuditRepository.getAuditRepository().size()).isEqualTo(1);
-        assertThat(inMemoryAuditRepository.getAuditRepository().get(0)).isEqualTo(username + ": " + message);
+        assertThat(inMemoryAuditRepository.getAudit().size()).isEqualTo(1);
+        assertThat(inMemoryAuditRepository.getAudit().get(0)).isEqualTo(username + ": " + message);
     }
 }

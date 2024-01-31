@@ -1,5 +1,7 @@
 package application.port.repository;
 
+import java.util.List;
+
 /**
  * Репозиторий для сохранения аудита
  */
@@ -10,4 +12,10 @@ public interface AuditRepository {
      * @param message сообщение
      */
     void saveAudit(String username, String message);
+
+    /**
+     * Получить аудит
+     * @return список сообщений аудита
+     */
+    List<String> getAudit();
 }
