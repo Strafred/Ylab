@@ -36,6 +36,7 @@ public class MeterServiceImpl implements MeterService {
 
     /**
      * Получить список доступных типов счетчиков
+     *
      * @return список типов счетчиков
      */
     @Override
@@ -45,7 +46,8 @@ public class MeterServiceImpl implements MeterService {
 
     /**
      * Получение истории счётчиков пользователя
-     * @param username имя пользователя
+     *
+     * @param username     имя пользователя
      * @param loggedInUser авторизованный пользователь
      * @return список DTO с данными о счётчиках
      * @throws AccessDeniedException если авторизованный пользователь не имеет доступа к данным пользователя
@@ -67,9 +69,10 @@ public class MeterServiceImpl implements MeterService {
 
     /**
      * Получить показания счетчиков за определенный месяц
-     * @param month месяц
-     * @param year год
-     * @param username имя пользователя, чьи показания нужно получить
+     *
+     * @param month        месяц
+     * @param year         год
+     * @param username     имя пользователя, чьи показания нужно получить
      * @param loggedInUser пользователь, который запрашивает показания
      * @return список показаний счетчиков
      * @throws AccessDeniedException если у пользователя нет доступа к запрашиваемому пользователю
@@ -94,7 +97,8 @@ public class MeterServiceImpl implements MeterService {
 
     /**
      * Получить показания счетчиков за текущий месяц
-     * @param username имя пользователя, чьи показания нужно получить
+     *
+     * @param username     имя пользователя, чьи показания нужно получить
      * @param loggedInUser пользователь, который запрашивает показания
      * @return список показаний счетчиков
      * @throws AccessDeniedException если у пользователя нет доступа к запрашиваемому пользователю
@@ -110,14 +114,15 @@ public class MeterServiceImpl implements MeterService {
 
     /**
      * Записать показание счетчика
-     * @param meterType тип счетчика
+     *
+     * @param meterType    тип счетчика
      * @param readingValue показание счетчика
-     * @param username имя пользователя
+     * @param username     имя пользователя
      * @param loggedInUser данные о текущем пользователе
-     * @throws DuplicateReadingException если показание счетчика за этот месяц уже записано
+     * @throws DuplicateReadingException  если показание счетчика за этот месяц уже записано
      * @throws WrongReadingValueException если показание счетчика меньше, чем предыдущее показание
-     * @throws AccessDeniedException если у пользователя нет доступа к данным пользователя
-     * @throws NoSuchMeterTypeException если тип счетчика не найден
+     * @throws AccessDeniedException      если у пользователя нет доступа к данным пользователя
+     * @throws NoSuchMeterTypeException   если тип счетчика не найден
      */
     @Override
     public void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) throws DuplicateReadingException, WrongReadingValueException, AccessDeniedException, NoSuchMeterTypeException {
@@ -143,5 +148,19 @@ public class MeterServiceImpl implements MeterService {
         userMetersRepository.putUserMeterByUsername(username, meterData);
 
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " wrote meter reading for " + username + " for meter type " + meterType + " with value " + readingValue);
+    }
+
+    @Override
+    public void addNewMeterType(String meterTypeName, User loggedInUser) throws AccessDeniedException {
+        auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " tried to add new meter type " + meterTypeName);
+
+        if (!UserValidationUtils.isAdmin(loggedInUser)) {
+            throw new AccessDeniedException();
+        }
+
+        var meterType = new MeterType(meterTypeName);
+        meterTypeRepository.addMeterType(meterType);
+
+        auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " added new meter type " + meterType);
     }
 }

@@ -3,6 +3,7 @@ package ylab.adapter.out;
 import application.port.out.MeterTypeRepository;
 import model.meterdata.MeterType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,11 +14,13 @@ public class InMemoryMeterTypeRepository implements MeterTypeRepository {
     /**
      * Список типов счетчиков
      */
-    List<MeterType> meterTypes = List.of(
-            new MeterType("Cold water"),
-            new MeterType("Hot water"),
-            new MeterType("Gas")
-    );
+    List<MeterType> meterTypes = new ArrayList<>();
+
+    public InMemoryMeterTypeRepository() {
+        meterTypes.add(new MeterType("Cold water"));
+        meterTypes.add(new MeterType("Hot water"));
+        meterTypes.add(new MeterType("Gas"));
+    }
 
     @Override
     public List<MeterType> getMeterTypes() {
@@ -29,5 +32,10 @@ public class InMemoryMeterTypeRepository implements MeterTypeRepository {
         return meterTypes.stream()
                 .filter(meterType::equals)
                 .findFirst();
+    }
+
+    @Override
+    public void addMeterType(MeterType meterType) {
+        meterTypes.add(meterType);
     }
 }

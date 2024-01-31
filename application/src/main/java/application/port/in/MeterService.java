@@ -59,4 +59,12 @@ public interface MeterService {
      * @throws NoSuchMeterTypeException если тип счетчика не найден
      */
     void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) throws DuplicateReadingException, WrongReadingValueException, AccessDeniedException, NoSuchMeterTypeException, NoSuchMeterTypeException;
+
+    /**
+     * Добавить новый тип счетчика
+     * @param meterTypeName название типа счетчика
+     * @param loggedInUser авторизованный пользователь
+     * @throws AccessDeniedException если авторизованный пользователь не имеет права добавлять новый тип счетчика
+     */
+    void addNewMeterType(String meterTypeName, User loggedInUser) throws AccessDeniedException;
 }

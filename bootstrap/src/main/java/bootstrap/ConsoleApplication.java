@@ -49,6 +49,7 @@ public class ConsoleApplication {
             scanner.nextLine();
 
             switch (choice) {
+                case 0 -> addMeterType(scanner, meterController);
                 case 1 -> registerUser(scanner, userController);
                 case 2 -> loginUser(scanner, userController);
                 case 3 -> writeMeterReading(scanner, meterController);
@@ -59,6 +60,23 @@ public class ConsoleApplication {
                 default -> System.out.println("Неверный выбор. Попробуйте снова.");
             }
         }
+    }
+
+    /**
+     * Добавить новый тип счётчика
+     * @param scanner сканнер для ввода данных
+     * @param meterController контроллер для работы с счетчиками
+     */
+    private static void addMeterType(Scanner scanner, MeterController meterController) {
+        if (loggedInUser == null) {
+            System.out.println("Сначала авторизуйтесь!");
+            return;
+        }
+
+        System.out.println("Введите название типа счетчика:");
+        var meterTypeName = scanner.nextLine();
+
+        meterController.addNewMeterType(meterTypeName, loggedInUser);
     }
 
     /**
@@ -168,6 +186,7 @@ public class ConsoleApplication {
      * Вывести меню
      */
     private static void displayMenu() {
+        System.out.println("0. Добавить новый тип счетчика (только для администратора)");
         System.out.println("1. Регистрация");
         System.out.println("2. Авторизация");
         System.out.println("3. Подача показания");

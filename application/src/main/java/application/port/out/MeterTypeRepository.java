@@ -20,4 +20,10 @@ public interface MeterTypeRepository {
      * @return тип счетчика
      */
     Optional<MeterType> findMeterType(MeterType meterType);
+
+    /**
+     * Добавить тип счетчика в репозиторий
+     * @param meterType тип счетчика
+     */
+    void addMeterType(MeterType meterType);
 }

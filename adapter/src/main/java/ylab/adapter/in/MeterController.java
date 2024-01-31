@@ -97,4 +97,17 @@ public class MeterController {
             System.err.println("No such method type");
         }
     }
+
+    /**
+     * Эндпоинт для добавления нового типа счетчика
+     * @param meterTypeName имя нового типа счетчика
+     * @param loggedInUser авторизованный пользователь
+     */
+    public void addNewMeterType(String meterTypeName, User loggedInUser) {
+        try {
+            meterService.addNewMeterType(meterTypeName, loggedInUser);
+        } catch (AccessDeniedException e) {
+            System.err.println("Access denied");
+        }
+    }
 }
