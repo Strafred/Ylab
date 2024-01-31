@@ -1,4 +1,4 @@
-package application.port.in.meterdata.dto;
+package application.port.in.dto;
 
 import model.meterdata.MeterType;
 import model.meterdata.ReadingData;

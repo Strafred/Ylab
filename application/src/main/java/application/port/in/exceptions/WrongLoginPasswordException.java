@@ -1,4 +1,4 @@
-package application.port.in.user.exceptions;
+package application.port.in.exceptions;
 
 /**
  * Исключение, возникающее при неверном логине или пароле

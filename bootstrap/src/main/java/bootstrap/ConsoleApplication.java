@@ -1,16 +1,10 @@
 package bootstrap;
 
-import application.port.in.meterdata.GetAccessibleMeterTypesUseCase;
-import application.port.in.meterdata.ShowMetersHistoryUseCase;
-import application.port.in.meterdata.ShowMonthReadingsUseCase;
-import application.port.in.meterdata.WriteMeterReadingUseCase;
-import application.port.in.user.AuthenticateUserUseCase;
+import application.port.in.MeterService;
+import application.port.in.UserService;
 import application.port.out.*;
-import application.service.meterdata.GetAccessibleMeterTypesService;
-import application.service.meterdata.ShowMetersHistoryService;
-import application.service.meterdata.ShowMonthReadingsService;
-import application.service.meterdata.WriteMeterReadingService;
-import application.service.user.AuthenticateUserService;
+import application.service.MeterServiceImpl;
+import application.service.UserServiceImpl;
 import model.meterdata.MeterType;
 import model.user.User;
 import ylab.adapter.in.MeterController;
@@ -33,38 +27,20 @@ public class ConsoleApplication {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        // Manual DI:
-        // Audit:
         AuditRepository auditRepository = new InMemoryAuditRepository();
 
-
-        // User Repositories:
         UserRepository userRepository = new InMemoryUserRepository();
         UserMetersRepository userMetersRepository = new InMemoryUserMetersRepository();
-
-        // User Use Cases:
-        AuthenticateUserUseCase authenticateUserUseCase = new AuthenticateUserService(userRepository, userMetersRepository, auditRepository);
-
-        // User Controllers:
-        UserController userController = new UserController(authenticateUserUseCase);
+        UserService userService = new UserServiceImpl(userRepository, userMetersRepository, auditRepository);
+        UserController userController = new UserController(userService);
 
 
-        // Meter Repositories:
         MeterDataRepository meterDataRepository = new InMemoryMeterDataRepository();
         MeterTypeRepository meterTypeRepository = new InMemoryMeterTypeRepository();
-
-        // Meter Use Cases:
-        GetAccessibleMeterTypesUseCase getAccessibleMeterTypesUseCase = new GetAccessibleMeterTypesService(meterTypeRepository);
-        ShowMetersHistoryUseCase showMetersHistoryUseCase = new ShowMetersHistoryService(userMetersRepository, auditRepository);
-        ShowMonthReadingsUseCase showMonthReadingsUseCase = new ShowMonthReadingsService(userMetersRepository, auditRepository);
-        WriteMeterReadingUseCase writeMeterReadingUseCase = new WriteMeterReadingService(meterDataRepository, userMetersRepository, meterTypeRepository, auditRepository);
+        MeterService meterService = new MeterServiceImpl(meterDataRepository, meterTypeRepository, userMetersRepository, auditRepository);
+        MeterController meterController = new MeterController(meterService);
 
 
-        // Meter Controllers:
-        MeterController meterController = new MeterController(getAccessibleMeterTypesUseCase, showMetersHistoryUseCase, showMonthReadingsUseCase, writeMeterReadingUseCase);
-
-
-        // Run:
         Scanner scanner = new Scanner(System.in);
         while (true) {
             displayMenu();

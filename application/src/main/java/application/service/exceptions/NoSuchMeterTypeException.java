@@ -1,4 +1,4 @@
-package application.service.meterdata.exceptions;
+package application.service.exceptions;
 
 /**
  * Исключение, возникающее при отсутствии такого типа счетчика

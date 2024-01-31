@@ -9,7 +9,7 @@ import model.user.UserRole;
 import java.util.ArrayList;
 import java.util.List;
 
-import static application.service.user.AuthenticateUserService.hashPassword;
+import static application.service.UserServiceImpl.hashPassword;
 
 /**
  * Реализация репозитория пользователей в памяти

@@ -1,14 +1,14 @@
-package application.service.user;
+package application.service;
 
-import application.port.in.user.AuthenticateUserUseCase;
-import application.port.in.user.exceptions.UserAlreadyExistsException;
-import application.port.in.user.exceptions.WrongLoginPasswordException;
+import application.port.in.UserService;
+import application.port.in.exceptions.UserAlreadyExistsException;
+import application.port.in.exceptions.WrongLoginPasswordException;
 import application.port.out.AuditRepository;
 import application.port.out.UserMetersRepository;
 import application.port.out.UserRepository;
+import application.service.exceptions.UnsafePasswordException;
 import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongUsernameException;
-import model.user.StringUtils;
 import model.user.User;
 import model.usermeter.UserMeters;
 
@@ -18,12 +18,12 @@ import java.security.NoSuchAlgorithmException;
 /**
  * Сервис для аутентификации пользователя
  */
-public class AuthenticateUserService implements AuthenticateUserUseCase {
+public class UserServiceImpl implements UserService {
     UserRepository userRepository;
     UserMetersRepository userMetersRepository;
     AuditRepository auditRepository;
 
-    public AuthenticateUserService(UserRepository userRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
         this.userRepository = userRepository;
         this.userMetersRepository = userMetersRepository;
         this.auditRepository = auditRepository;

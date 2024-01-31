@@ -1,16 +1,13 @@
-package application.port.in.user;
+package application.port.in;
 
-import application.port.in.user.exceptions.UserAlreadyExistsException;
-import application.port.in.user.exceptions.WrongLoginPasswordException;
-import application.service.user.UnsafePasswordException;
+import application.port.in.exceptions.UserAlreadyExistsException;
+import application.port.in.exceptions.WrongLoginPasswordException;
+import application.service.exceptions.UnsafePasswordException;
 import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongUsernameException;
 import model.user.User;
 
-/**
- * Сценарий: аутентификация пользователя.
- */
-public interface AuthenticateUserUseCase {
+public interface UserService {
     /**
      * Регистрация пользователя.
      * @param username имя пользователя

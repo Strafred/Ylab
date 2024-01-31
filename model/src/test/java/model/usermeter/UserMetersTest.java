@@ -1,9 +1,8 @@
-package model.usermeters;
+package model.usermeter;
 
 import model.meterdata.MeterData;
 import model.meterdata.MeterType;
 import model.user.User;
-import model.usermeter.UserMeters;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;

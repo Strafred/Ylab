@@ -2,10 +2,17 @@ package model.meterdata;
 
 import java.util.Objects;
 
+import static java.util.UUID.randomUUID;
+
 /**
  * Класс для хранения данных о типе счетчика
  */
 public class MeterType {
+    /**
+     * Идентификатор типа счетчика
+     */
+    private String meterTypeId;
+
     /**
      * Название типа счетчика
      */
@@ -16,6 +23,7 @@ public class MeterType {
      * @param name название типа счетчика
      */
     public MeterType(String name) {
+        this.meterTypeId = randomUUID().toString();
         this.name = name;
     }
 

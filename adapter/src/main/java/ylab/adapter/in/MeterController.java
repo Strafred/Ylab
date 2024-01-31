@@ -1,13 +1,10 @@
 package ylab.adapter.in;
 
-import application.port.in.meterdata.GetAccessibleMeterTypesUseCase;
-import application.port.in.meterdata.ShowMetersHistoryUseCase;
-import application.port.in.meterdata.ShowMonthReadingsUseCase;
-import application.port.in.meterdata.WriteMeterReadingUseCase;
-import application.port.in.meterdata.dto.MeterDataDTO;
-import application.port.in.meterdata.dto.MeterReadingDTO;
-import application.port.in.meterdata.exceptions.AccessDeniedException;
-import application.service.meterdata.exceptions.NoSuchMeterTypeException;
+import application.port.in.MeterService;
+import application.port.in.dto.MeterDataDTO;
+import application.port.in.dto.MeterReadingDTO;
+import application.port.in.exceptions.AccessDeniedException;
+import application.service.exceptions.NoSuchMeterTypeException;
 import model.meterdata.MeterType;
 import model.exceptions.DuplicateReadingException;
 import model.exceptions.WrongReadingValueException;
@@ -19,19 +16,10 @@ import java.util.List;
  * Контроллер для работы с данными о счетчиках
  */
 public class MeterController {
-    GetAccessibleMeterTypesUseCase getAccessibleMeterTypesUseCase;
-    ShowMetersHistoryUseCase showMetersHistoryUseCase;
-    ShowMonthReadingsUseCase showMonthReadingsUseCase;
-    WriteMeterReadingUseCase writeMeterReadingUseCase;
+    MeterService meterService;
 
-    public MeterController(GetAccessibleMeterTypesUseCase getAccessibleMeterTypesUseCase,
-                           ShowMetersHistoryUseCase showMetersHistoryUseCase,
-                           ShowMonthReadingsUseCase showMonthReadingsUseCase,
-                           WriteMeterReadingUseCase writeMeterReadingUseCase) {
-        this.getAccessibleMeterTypesUseCase = getAccessibleMeterTypesUseCase;
-        this.showMetersHistoryUseCase = showMetersHistoryUseCase;
-        this.showMonthReadingsUseCase = showMonthReadingsUseCase;
-        this.writeMeterReadingUseCase = writeMeterReadingUseCase;
+    public MeterController(MeterService meterService) {
+        this.meterService = meterService;
     }
 
     /**
@@ -39,7 +27,7 @@ public class MeterController {
      * @return список доступных типов счетчиков
      */
     public List<MeterType> getAccessibleMeterTypes() {
-        return getAccessibleMeterTypesUseCase.getAccessibleMeterTypes();
+        return meterService.getAccessibleMeterTypes();
     }
 
     /**
@@ -50,7 +38,7 @@ public class MeterController {
      */
     public List<MeterDataDTO> showMetersHistory(String username, User loggedInUser) {
         try {
-            return showMetersHistoryUseCase.getMetersHistory(username, loggedInUser);
+            return meterService.getMetersHistory(username, loggedInUser);
         } catch (AccessDeniedException e) {
             System.err.println("Access denied");
         }
@@ -65,7 +53,7 @@ public class MeterController {
      */
     public List<MeterReadingDTO> showMonthReadings(String username, User loggedInUser) {
         try {
-            return showMonthReadingsUseCase.getUsersCurrentMonthReadings(username, loggedInUser);
+            return meterService.getUsersCurrentMonthReadings(username, loggedInUser);
         } catch (AccessDeniedException e) {
             System.err.println("Access denied");
         }
@@ -82,7 +70,7 @@ public class MeterController {
      */
     public List<MeterReadingDTO> getUsersSpecificMonthReadings(int month, int year, String username, User loggedInUser) {
         try {
-            return showMonthReadingsUseCase.getUsersSpecificMonthReadings(month, year, username, loggedInUser);
+            return meterService.getUsersSpecificMonthReadings(month, year, username, loggedInUser);
         } catch (AccessDeniedException e) {
             System.err.println("Access denied");
         }
@@ -98,7 +86,7 @@ public class MeterController {
      */
     public void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) {
         try {
-            writeMeterReadingUseCase.writeMeterReading(meterType, readingValue, username, loggedInUser);
+            meterService.writeMeterReading(meterType, readingValue, username, loggedInUser);
         } catch (DuplicateReadingException e) {
             System.err.println("Duplicate reading");
         } catch (WrongReadingValueException e) {
