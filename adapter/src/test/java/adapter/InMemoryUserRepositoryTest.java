@@ -1,6 +1,7 @@
 package adapter;
 
 import model.user.User;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ylab.adapter.repository.InMemoryUserRepository;
 
@@ -8,6 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class InMemoryUserRepositoryTest {
+    @DisplayName("When getUser, then return user")
     @Test
     void getUser_shouldWork() {
         var inMemoryUserRepository = new InMemoryUserRepository();
@@ -16,6 +18,7 @@ public class InMemoryUserRepositoryTest {
         assertThat(user).isNotNull();
     }
 
+    @DisplayName("When userExists, then return true")
     @Test
     void userExists_shouldWork() {
         var inMemoryUserRepository = new InMemoryUserRepository();
@@ -24,6 +27,7 @@ public class InMemoryUserRepositoryTest {
         assertThat(userExists).isTrue();
     }
 
+    @DisplayName("When saveUser, then save user")
     @Test
     void saveUser_shouldWork() {
         var inMemoryUserRepository = new InMemoryUserRepository();

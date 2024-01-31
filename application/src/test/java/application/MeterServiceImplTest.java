@@ -17,6 +17,7 @@ import model.user.User;
 import model.usermeter.UserMeters;
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -49,6 +50,7 @@ public class MeterServiceImplTest {
         MockitoAnnotations.openMocks(this);
     }
 
+    @DisplayName("Give non-existent meter type, when writeMeterReading, then throw NoSuchMeterTypeException")
     @Test
     void givenNonExistentMeterType_writeMeterReading_shouldThrowException() {
         Mockito.when(meterTypeRepository.findMeterType(new MeterType("123"))).thenReturn(Optional.empty());
@@ -58,6 +60,7 @@ public class MeterServiceImplTest {
         }).isInstanceOf(NoSuchMeterTypeException.class);
     }
 
+    @DisplayName("Given correct info, when writeMeterReading, then write meter reading")
     @Test
     void givenCorrectInfo_writeMeterReading_shouldWork() {
         Mockito.when(meterTypeRepository.findMeterType(new MeterType("123"))).thenReturn(Optional.of(new MeterType("123")));

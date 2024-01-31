@@ -1,6 +1,7 @@
 package adapter;
 
 import model.meterdata.MeterType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ylab.adapter.repository.InMemoryMeterTypeRepository;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class InMemoryMeterTypeRepositoryTest {
+    @DisplayName("When getMeterTypes, then return meter types")
     @Test
     void getMeterTypes_ShouldWork() {
         InMemoryMeterTypeRepository inMemoryMeterTypeRepository = new InMemoryMeterTypeRepository();
@@ -22,6 +24,7 @@ public class InMemoryMeterTypeRepositoryTest {
         );
     }
 
+    @DisplayName("When findMeterType, then return meter type")
     @Test
     void findMeterType_ShouldWork() {
         InMemoryMeterTypeRepository inMemoryMeterTypeRepository = new InMemoryMeterTypeRepository();
