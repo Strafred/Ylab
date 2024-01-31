@@ -3,9 +3,9 @@ package application.service;
 import application.port.in.UserService;
 import application.port.in.exceptions.UserAlreadyExistsException;
 import application.port.in.exceptions.WrongLoginPasswordException;
-import application.port.out.AuditRepository;
-import application.port.out.UserMetersRepository;
-import application.port.out.UserRepository;
+import application.port.repository.AuditRepository;
+import application.port.repository.UserMetersRepository;
+import application.port.repository.UserRepository;
 import application.service.exceptions.UnsafePasswordException;
 import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongUsernameException;
@@ -19,9 +19,9 @@ import java.security.NoSuchAlgorithmException;
  * Сервис для аутентификации пользователя
  */
 public class UserServiceImpl implements UserService {
-    UserRepository userRepository;
-    UserMetersRepository userMetersRepository;
-    AuditRepository auditRepository;
+    private final UserRepository userRepository;
+    private final UserMetersRepository userMetersRepository;
+    private final AuditRepository auditRepository;
 
     public UserServiceImpl(UserRepository userRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
         this.userRepository = userRepository;

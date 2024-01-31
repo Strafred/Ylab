@@ -17,15 +17,15 @@ public class MeterData {
     /**
      * Идентификатор счетчика
      */
-    String meterId;
+    private final String meterId;
     /**
      * Тип счетчика
      */
-    MeterType meterType;
+    private final MeterType meterType;
     /**
      * Данные о показаниях счетчика
      */
-    Map<ReadingDate, ReadingData> readings;
+    private final Map<ReadingDate, ReadingData> readings;
 
     /**
      * Конструктор
@@ -38,7 +38,7 @@ public class MeterData {
     }
 
     /**
-     * Конструктор
+     * Добавить показание счетчика
      * @param readingData показание счетчика
      */
     public void addReading(ReadingData readingData) throws DuplicateReadingException, WrongReadingValueException {

@@ -12,19 +12,19 @@ public class User {
     /**
      * Идентификатор пользователя
      */
-    String userId;
+    private String userId;
     /**
      * Имя пользователя
      */
-    String username;
+    private final String username;
     /**
      * Зашифрованный пароль
      */
-    String encodedPassword;
+    private final String encodedPassword;
     /**
      * Роль пользователя
      */
-    UserRole role;
+    private final UserRole role;
 
     /**
      * Конструктор

@@ -1,6 +1,6 @@
-package ylab.adapter.out;
+package ylab.adapter.repository;
 
-import application.port.out.MeterDataRepository;
+import application.port.repository.MeterDataRepository;
 import model.meterdata.MeterData;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ public class InMemoryMeterDataRepository implements MeterDataRepository {
     /**
      * Список данных о счетчиках
      */
-    List<MeterData> meterDataList = new ArrayList<>();
+    private final List<MeterData> meterDataList = new ArrayList<>();
 
     @Override
     public void putMeterData(MeterData meterData) {

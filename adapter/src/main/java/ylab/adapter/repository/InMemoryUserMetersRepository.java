@@ -1,6 +1,6 @@
-package ylab.adapter.out;
+package ylab.adapter.repository;
 
-import application.port.out.UserMetersRepository;
+import application.port.repository.UserMetersRepository;
 import model.meterdata.MeterData;
 import model.usermeter.UserMeters;
 
@@ -14,7 +14,7 @@ public class InMemoryUserMetersRepository implements UserMetersRepository {
     /**
      * Список данных о счетчиках пользователей
      */
-    List<UserMeters> userMetersList = new ArrayList<>();
+    private final List<UserMeters> userMetersList = new ArrayList<>();
 
     @Override
     public void saveUserMeters(UserMeters userMeters) {

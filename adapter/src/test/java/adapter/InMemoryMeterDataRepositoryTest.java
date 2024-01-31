@@ -3,7 +3,7 @@ package adapter;
 import model.meterdata.MeterData;
 import model.meterdata.MeterType;
 import org.junit.jupiter.api.Test;
-import ylab.adapter.out.InMemoryMeterDataRepository;
+import ylab.adapter.repository.InMemoryMeterDataRepository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

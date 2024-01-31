@@ -11,12 +11,12 @@ public class MeterType {
     /**
      * Идентификатор типа счетчика
      */
-    private String meterTypeId;
+    private final String meterTypeId;
 
     /**
      * Название типа счетчика
      */
-    private String name;
+    private final String name;
 
     /**
      * Конструктор

@@ -1,4 +1,4 @@
-package application.port.out;
+package application.port.repository;
 
 import model.user.User;
 

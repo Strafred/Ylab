@@ -1,6 +1,6 @@
-package ylab.adapter.out;
+package ylab.adapter.repository;
 
-import application.port.out.MeterTypeRepository;
+import application.port.repository.MeterTypeRepository;
 import model.meterdata.MeterType;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ public class InMemoryMeterTypeRepository implements MeterTypeRepository {
     /**
      * Список типов счетчиков
      */
-    List<MeterType> meterTypes = new ArrayList<>();
+    private final List<MeterType> meterTypes = new ArrayList<>();
 
     public InMemoryMeterTypeRepository() {
         meterTypes.add(new MeterType("Cold water"));

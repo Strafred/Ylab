@@ -4,10 +4,10 @@ import application.port.in.MeterService;
 import application.port.in.dto.MeterDataDTO;
 import application.port.in.dto.MeterReadingDTO;
 import application.port.in.exceptions.AccessDeniedException;
-import application.port.out.AuditRepository;
-import application.port.out.MeterDataRepository;
-import application.port.out.MeterTypeRepository;
-import application.port.out.UserMetersRepository;
+import application.port.repository.AuditRepository;
+import application.port.repository.MeterDataRepository;
+import application.port.repository.MeterTypeRepository;
+import application.port.repository.UserMetersRepository;
 import application.service.exceptions.NoSuchMeterTypeException;
 import application.service.utils.UserValidationUtils;
 import model.exceptions.DuplicateReadingException;
@@ -22,10 +22,10 @@ import java.time.YearMonth;
 import java.util.List;
 
 public class MeterServiceImpl implements MeterService {
-    MeterDataRepository meterDataRepository;
-    MeterTypeRepository meterTypeRepository;
-    UserMetersRepository userMetersRepository;
-    AuditRepository auditRepository;
+    private final MeterDataRepository meterDataRepository;
+    private final MeterTypeRepository meterTypeRepository;
+    private final UserMetersRepository userMetersRepository;
+    private final AuditRepository auditRepository;
 
     public MeterServiceImpl(MeterDataRepository meterDataRepository, MeterTypeRepository meterTypeRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
         this.meterDataRepository = meterDataRepository;

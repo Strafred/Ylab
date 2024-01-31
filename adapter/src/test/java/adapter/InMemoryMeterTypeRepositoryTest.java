@@ -2,7 +2,7 @@ package adapter;
 
 import model.meterdata.MeterType;
 import org.junit.jupiter.api.Test;
-import ylab.adapter.out.InMemoryMeterTypeRepository;
+import ylab.adapter.repository.InMemoryMeterTypeRepository;
 
 import java.util.List;
 

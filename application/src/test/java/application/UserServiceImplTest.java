@@ -2,9 +2,9 @@ package application;
 
 import application.port.in.exceptions.UserAlreadyExistsException;
 import application.port.in.exceptions.WrongLoginPasswordException;
-import application.port.out.AuditRepository;
-import application.port.out.UserMetersRepository;
-import application.port.out.UserRepository;
+import application.port.repository.AuditRepository;
+import application.port.repository.UserMetersRepository;
+import application.port.repository.UserRepository;
 import application.service.UserServiceImpl;
 import model.user.User;
 import model.usermeter.UserMeters;

@@ -9,11 +9,11 @@ public class ReadingDate {
     /**
      * Год
      */
-    int year;
+    private final int year;
     /**
      * Месяц
      */
-    int month;
+    private final int month;
 
     /**
      * Конструктор

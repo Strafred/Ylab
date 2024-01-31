@@ -2,14 +2,14 @@ package bootstrap;
 
 import application.port.in.MeterService;
 import application.port.in.UserService;
-import application.port.out.*;
+import application.port.repository.*;
 import application.service.MeterServiceImpl;
 import application.service.UserServiceImpl;
 import model.meterdata.MeterType;
 import model.user.User;
 import ylab.adapter.in.MeterController;
 import ylab.adapter.in.UserController;
-import ylab.adapter.out.*;
+import ylab.adapter.repository.*;
 
 import java.util.Scanner;
 

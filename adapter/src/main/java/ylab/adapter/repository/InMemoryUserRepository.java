@@ -1,6 +1,6 @@
-package ylab.adapter.out;
+package ylab.adapter.repository;
 
-import application.port.out.UserRepository;
+import application.port.repository.UserRepository;
 import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongUsernameException;
 import model.user.User;
@@ -18,7 +18,7 @@ public class InMemoryUserRepository implements UserRepository {
     /**
      * Список пользователей
      */
-    List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
 
     public InMemoryUserRepository() {
         try {

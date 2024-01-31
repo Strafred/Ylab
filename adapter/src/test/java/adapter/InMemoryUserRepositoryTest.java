@@ -1,9 +1,8 @@
 package adapter;
 
 import model.user.User;
-import model.user.UserRole;
 import org.junit.jupiter.api.Test;
-import ylab.adapter.out.InMemoryUserRepository;
+import ylab.adapter.repository.InMemoryUserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

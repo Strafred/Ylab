@@ -1,4 +1,4 @@
-package application.port.out;
+package application.port.repository;
 
 /**
  * Репозиторий для сохранения аудита

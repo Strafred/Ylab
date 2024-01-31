@@ -7,10 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static java.util.UUID.randomUUID;
+
 /**
  * Класс для хранения данных о пользователе и его счетчиках
  */
 public class UserMeters {
+    /**
+     * Идентификатор
+     */
+    private String userMetersId;
+
     /**
      * Пользователь
      */
@@ -25,6 +32,7 @@ public class UserMeters {
      * @param user пользователь
      */
     public UserMeters(User user) {
+        this.userMetersId = randomUUID().toString();
         this.user = user;
         this.meters = new ArrayList<>();
     }
@@ -35,6 +43,7 @@ public class UserMeters {
      * @param meters список счетчиков
      */
     public UserMeters(User user, List<MeterData> meters) {
+        this.userMetersId = randomUUID().toString();
         this.user = user;
         this.meters = meters;
     }

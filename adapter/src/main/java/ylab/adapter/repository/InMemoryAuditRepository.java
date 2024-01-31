@@ -1,6 +1,6 @@
-package ylab.adapter.out;
+package ylab.adapter.repository;
 
-import application.port.out.AuditRepository;
+import application.port.repository.AuditRepository;
 
 import java.util.ArrayList;
 import java.util.List;
