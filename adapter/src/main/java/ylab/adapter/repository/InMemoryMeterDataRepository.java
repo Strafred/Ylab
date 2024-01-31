@@ -25,7 +25,8 @@ public class InMemoryMeterDataRepository implements MeterDataRepository {
         }
     }
 
-    public List<MeterData> getMeterDataList() {
+    @Override
+    public List<MeterData> getMeterData() {
         return meterDataList;
     }
 }

@@ -15,7 +15,7 @@ public class InMemoryMeterDataRepositoryTest {
 
         meterDataRepository.putMeterData(meterData);
 
-        assertThat(meterDataRepository.getMeterDataList().size()).isEqualTo(1);
-        assertThat(meterDataRepository.getMeterDataList().get(0)).isEqualTo(meterData);
+        assertThat(meterDataRepository.getMeterData().size()).isEqualTo(1);
+        assertThat(meterDataRepository.getMeterData().get(0)).isEqualTo(meterData);
     }
 }
