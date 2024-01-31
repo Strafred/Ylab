@@ -1,6 +1,8 @@
 package ylab.adapter.out;
 
 import application.port.out.UserRepository;
+import model.exceptions.WrongPasswordException;
+import model.exceptions.WrongUsernameException;
 import model.user.User;
 import model.user.UserRole;
 
@@ -19,7 +21,12 @@ public class InMemoryUserRepository implements UserRepository {
     List<User> users = new ArrayList<>();
 
     public InMemoryUserRepository() {
-        this.users.add(new User("admin", hashPassword("123"), UserRole.ADMIN));
+        try {
+            var user = new User("admin", hashPassword("123"), UserRole.ADMIN);
+            this.users.add(user);
+        } catch (WrongUsernameException | WrongPasswordException e) {
+            System.err.println("Wrong admin init username or password!");
+        }
     }
 
     @Override

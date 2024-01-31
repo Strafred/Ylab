@@ -20,6 +20,7 @@ import java.util.HashMap;
 
 import static application.service.user.AuthenticateUserService.hashPassword;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ShowMetersHistoryServiceTest {
     @InjectMocks
@@ -38,7 +39,7 @@ public class ShowMetersHistoryServiceTest {
 
     @Test
     void givenAnotherUserUsername_getMetersHistory_shouldThrowAccessDeniedException() {
-        User loggedInUser = new User("test", hashPassword("test"));
+        User loggedInUser = assertDoesNotThrow(() -> new User("test", hashPassword("test")));
         String username = "anotherUser";
 
         assertThatThrownBy(() -> showMetersHistoryService.getMetersHistory(username, loggedInUser))
@@ -47,7 +48,7 @@ public class ShowMetersHistoryServiceTest {
 
     @Test
     void givenSameUserUsername_getMetersHistory_shouldWork() {
-        User loggedInUser = new User("test", hashPassword("test"));
+        User loggedInUser = assertDoesNotThrow(() -> new User("test", hashPassword("test")));
         String username = "test";
 
         UserMeters userMeters = new UserMeters(loggedInUser);

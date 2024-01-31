@@ -60,7 +60,8 @@ public class AuthenticateUserServiceTest {
 
     @Test
     void givenWrongUsername_loginUser_shouldThrowException() {
-        Mockito.when(userRepositoryMock.getUser("test")).thenReturn(new User("test", hashPassword("test")));
+        var user = assertDoesNotThrow(() -> new User("test", hashPassword("test")));
+        Mockito.when(userRepositoryMock.getUser("test")).thenReturn(user);
 
         assertThatExceptionOfType(WrongLoginPasswordException.class)
                 .isThrownBy(() -> authenticateUserService.loginUser("wrongUsername", "test"));
@@ -68,7 +69,8 @@ public class AuthenticateUserServiceTest {
 
     @Test
     void givenWrongPassword_loginUser_shouldThrowException() {
-        Mockito.when(userRepositoryMock.getUser("test")).thenReturn(new User("test", hashPassword("test")));
+        var user = assertDoesNotThrow(() -> new User("test", hashPassword("test")));
+        Mockito.when(userRepositoryMock.getUser("test")).thenReturn(user);
 
         assertThatExceptionOfType(WrongLoginPasswordException.class)
                 .isThrownBy(() -> authenticateUserService.loginUser("test", "wrongPassword"));
@@ -76,7 +78,8 @@ public class AuthenticateUserServiceTest {
 
     @Test
     void givenCorrectCredentials_loginUser_shouldWorkCorrectly() {
-        Mockito.when(userRepositoryMock.getUser("test")).thenReturn(new User("test", hashPassword("test")));
+        var user = assertDoesNotThrow(() -> new User("test", hashPassword("test")));
+        Mockito.when(userRepositoryMock.getUser("test")).thenReturn(user);
 
         assertDoesNotThrow(() -> authenticateUserService.loginUser("test", "test"));
 

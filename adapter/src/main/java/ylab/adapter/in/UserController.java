@@ -3,6 +3,9 @@ package ylab.adapter.in;
 import application.port.in.user.AuthenticateUserUseCase;
 import application.port.in.user.exceptions.UserAlreadyExistsException;
 import application.port.in.user.exceptions.WrongLoginPasswordException;
+import application.service.user.UnsafePasswordException;
+import model.exceptions.WrongPasswordException;
+import model.exceptions.WrongUsernameException;
 import model.user.User;
 
 /**
@@ -25,6 +28,10 @@ public class UserController {
             authenticateUserUseCase.registerUser(username, password);
         } catch (UserAlreadyExistsException e) {
             System.err.println("User already exists!");
+        } catch (WrongUsernameException | WrongPasswordException e) {
+            System.err.println("Wrong username or password!");
+        } catch (UnsafePasswordException e) {
+            System.err.println("Unsafe password!");
         }
     }
 

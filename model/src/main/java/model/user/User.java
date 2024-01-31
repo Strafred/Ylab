@@ -1,5 +1,8 @@
 package model.user;
 
+import model.exceptions.WrongPasswordException;
+import model.exceptions.WrongUsernameException;
+
 import static java.util.UUID.randomUUID;
 
 /**
@@ -28,9 +31,15 @@ public class User {
      * @param username имя пользователя
      * @param encodedPassword зашифрованный пароль
      */
-    public User(String username, String encodedPassword) {
+    public User(String username, String encodedPassword) throws WrongUsernameException, WrongPasswordException {
         this.userId = randomUUID().toString();
+        if (StringUtils.isEmpty(username)) {
+            throw new WrongUsernameException("Username cannot be empty!");
+        }
         this.username = username;
+        if (StringUtils.isEmpty(encodedPassword)) {
+            throw new WrongPasswordException("Password cannot be empty!");
+        }
         this.encodedPassword = encodedPassword;
         this.role = UserRole.USER;
     }
@@ -41,8 +50,14 @@ public class User {
      * @param encodedPassword зашифрованный пароль
      * @param role роль пользователя
      */
-    public User(String username, String encodedPassword, UserRole role) {
+    public User(String username, String encodedPassword, UserRole role) throws WrongUsernameException, WrongPasswordException {
+        if (StringUtils.isEmpty(username)) {
+            throw new WrongUsernameException("Username cannot be empty!");
+        }
         this.username = username;
+        if (StringUtils.isEmpty(encodedPassword)) {
+            throw new WrongPasswordException("Password cannot be empty!");
+        }
         this.encodedPassword = encodedPassword;
         this.role = role;
     }

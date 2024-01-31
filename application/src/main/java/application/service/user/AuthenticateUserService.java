@@ -6,6 +6,9 @@ import application.port.in.user.exceptions.WrongLoginPasswordException;
 import application.port.out.AuditRepository;
 import application.port.out.UserMetersRepository;
 import application.port.out.UserRepository;
+import model.exceptions.WrongPasswordException;
+import model.exceptions.WrongUsernameException;
+import model.user.StringUtils;
 import model.user.User;
 import model.usermeter.UserMeters;
 
@@ -33,11 +36,14 @@ public class AuthenticateUserService implements AuthenticateUserUseCase {
      * @throws UserAlreadyExistsException если пользователь с таким именем уже существует
      */
     @Override
-    public void registerUser(String username, String password) throws UserAlreadyExistsException {
+    public void registerUser(String username, String password) throws UserAlreadyExistsException, WrongUsernameException, WrongPasswordException, UnsafePasswordException {
         auditRepository.saveAudit(username, username + " tries to register");
 
         if (userRepository.userExists(username)) {
             throw new UserAlreadyExistsException();
+        }
+        if (password.length() < 4) {
+            throw new UnsafePasswordException("Password is too short!");
         }
         User user = new User(username, hashPassword(password));
         userRepository.saveUser(user);

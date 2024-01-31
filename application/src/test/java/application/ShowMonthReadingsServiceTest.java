@@ -25,6 +25,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class ShowMonthReadingsServiceTest {
     @InjectMocks
@@ -43,7 +44,7 @@ public class ShowMonthReadingsServiceTest {
 
     @Test
     void givenMonthAndYear_getUsersSpecificMonthReadings_shouldReturnCorrectMeterReadings() {
-        var user = new User("user", "hashedPassword");
+        var user = assertDoesNotThrow(() -> new User("user", "hashedPassword"));
 
         var meterData1Mock = Mockito.spy(new MeterData(new MeterType("Hot water")));
         Mockito.when(meterData1Mock.getAllReadings()).thenReturn(Map.of(
@@ -84,7 +85,7 @@ public class ShowMonthReadingsServiceTest {
 
     @Test
     void givenAnotherUserUsername_getUsersSpecificMonthReadings_shouldThrowAccessDeniedException() {
-        var user = new User("user", "hashedPassword");
+        var user = assertDoesNotThrow(() -> new User("user", "hashedPassword"));
 
         assertThatThrownBy(() -> showMonthReadingsService.getUsersSpecificMonthReadings(1, 2021, "anotherUser", user))
                 .isInstanceOf(AccessDeniedException.class);

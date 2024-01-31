@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import ylab.adapter.out.InMemoryUserRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class InMemoryUserRepositoryTest {
     @Test
@@ -27,7 +28,7 @@ public class InMemoryUserRepositoryTest {
     @Test
     void saveUser_shouldWork() {
         var inMemoryUserRepository = new InMemoryUserRepository();
-        var user = new User("test", "test");
+        var user = assertDoesNotThrow(() -> new User("test", "test"));
         inMemoryUserRepository.saveUser(user);
 
         assertThat(inMemoryUserRepository.userExists("test")).isTrue();

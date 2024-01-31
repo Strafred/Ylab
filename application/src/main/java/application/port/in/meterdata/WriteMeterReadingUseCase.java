@@ -2,9 +2,9 @@ package application.port.in.meterdata;
 
 import application.port.in.meterdata.exceptions.AccessDeniedException;
 import application.service.meterdata.exceptions.NoSuchMeterTypeException;
-import model.meterdata.exceptions.DuplicateReadingException;
+import model.exceptions.DuplicateReadingException;
 import model.meterdata.MeterType;
-import model.meterdata.exceptions.WrongReadingValueException;
+import model.exceptions.WrongReadingValueException;
 import model.user.User;
 
 /**

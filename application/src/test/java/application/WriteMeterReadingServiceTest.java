@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class WriteMeterReadingServiceTest {
     @InjectMocks
@@ -51,7 +52,9 @@ public class WriteMeterReadingServiceTest {
     @Test
     void givenCorrectInfo_writeMeterReading_shouldWork() {
         Mockito.when(meterTypeRepository.findMeterType(new MeterType("123"))).thenReturn(Optional.of(new MeterType("123")));
-        Mockito.when(userMetersRepository.getUserMetersByUsername("user")).thenReturn(new UserMeters(new User("user", "encodedPassword")));
+
+        var user = assertDoesNotThrow(() -> new User("user", "encodedPassword"));
+        Mockito.when(userMetersRepository.getUserMetersByUsername("user")).thenReturn(new UserMeters(user));
 
         assertThatCode(() -> {
             writeMeterReadingService.writeMeterReading(new MeterType("123"), 123, "user", new User("user", "encodedPassword"));

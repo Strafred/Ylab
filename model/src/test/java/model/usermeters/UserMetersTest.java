@@ -7,11 +7,13 @@ import model.usermeter.UserMeters;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class UserMetersTest {
     @Test
     void givenAMeterData_addMeter_shouldWork() {
-        UserMeters userMeters = new UserMeters(new User("test", "test"));
+        User user = assertDoesNotThrow(() -> new User("test", "test"));
+        UserMeters userMeters = new UserMeters(user);
         userMeters.addMeter(new MeterData(new MeterType("TestMeterType")));
 
         assertThat(userMeters.getMeters().size()).isEqualTo(1);

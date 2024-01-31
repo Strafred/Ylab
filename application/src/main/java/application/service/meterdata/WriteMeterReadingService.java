@@ -11,8 +11,8 @@ import application.service.utils.UserValidationUtils;
 import model.meterdata.MeterData;
 import model.meterdata.MeterType;
 import model.meterdata.ReadingData;
-import model.meterdata.exceptions.DuplicateReadingException;
-import model.meterdata.exceptions.WrongReadingValueException;
+import model.exceptions.DuplicateReadingException;
+import model.exceptions.WrongReadingValueException;
 import model.user.User;
 
 /**

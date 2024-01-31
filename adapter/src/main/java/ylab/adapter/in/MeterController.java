@@ -9,8 +9,8 @@ import application.port.in.meterdata.dto.MeterReadingDTO;
 import application.port.in.meterdata.exceptions.AccessDeniedException;
 import application.service.meterdata.exceptions.NoSuchMeterTypeException;
 import model.meterdata.MeterType;
-import model.meterdata.exceptions.DuplicateReadingException;
-import model.meterdata.exceptions.WrongReadingValueException;
+import model.exceptions.DuplicateReadingException;
+import model.exceptions.WrongReadingValueException;
 import model.user.User;
 
 import java.util.List;

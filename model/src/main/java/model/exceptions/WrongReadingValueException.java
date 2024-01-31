@@ -1,4 +1,4 @@
-package model.meterdata.exceptions;
+package model.exceptions;
 
 /**
  * Исключение, возникающее при некорректном значении поданного показания счетчика

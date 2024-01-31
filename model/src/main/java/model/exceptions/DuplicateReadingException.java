@@ -1,4 +1,4 @@
-package model.meterdata.exceptions;
+package model.exceptions;
 
 /**
  * Исключение, возникающее при попытке добавить показание счетчика, когда за этот месяц уже есть показание

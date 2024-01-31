@@ -1,7 +1,7 @@
 package model.meterdata;
 
-import model.meterdata.exceptions.DuplicateReadingException;
-import model.meterdata.exceptions.WrongReadingValueException;
+import model.exceptions.DuplicateReadingException;
+import model.exceptions.WrongReadingValueException;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
