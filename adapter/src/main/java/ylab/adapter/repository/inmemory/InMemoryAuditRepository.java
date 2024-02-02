@@ -1,4 +1,4 @@
-package ylab.adapter.repository;
+package ylab.adapter.repository.inmemory;
 
 import application.port.repository.AuditRepository;
 

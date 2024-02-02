@@ -6,7 +6,7 @@ import model.user.User;
 import model.usermeter.UserMeters;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ylab.adapter.repository.InMemoryUserMetersRepository;
+import ylab.adapter.repository.inmemory.InMemoryUserMetersRepository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;

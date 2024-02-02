@@ -3,7 +3,7 @@ package adapter;
 import model.meterdata.MeterType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ylab.adapter.repository.InMemoryMeterTypeRepository;
+import ylab.adapter.repository.inmemory.InMemoryMeterTypeRepository;
 
 import java.util.List;
 

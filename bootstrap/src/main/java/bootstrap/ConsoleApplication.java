@@ -9,7 +9,7 @@ import model.meterdata.MeterType;
 import model.user.User;
 import ylab.adapter.in.MeterController;
 import ylab.adapter.in.UserController;
-import ylab.adapter.repository.*;
+import ylab.adapter.repository.inmemory.*;
 
 import java.util.Scanner;
 

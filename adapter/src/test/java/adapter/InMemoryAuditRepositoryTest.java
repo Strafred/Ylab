@@ -2,7 +2,7 @@ package adapter;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ylab.adapter.repository.InMemoryAuditRepository;
+import ylab.adapter.repository.inmemory.InMemoryAuditRepository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

@@ -4,7 +4,7 @@ import model.meterdata.MeterData;
 import model.meterdata.MeterType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ylab.adapter.repository.InMemoryMeterDataRepository;
+import ylab.adapter.repository.inmemory.InMemoryMeterDataRepository;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
