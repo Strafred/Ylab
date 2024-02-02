@@ -4,10 +4,7 @@ import application.port.in.MeterService;
 import application.port.in.dto.MeterDataDTO;
 import application.port.in.dto.MeterReadingDTO;
 import application.port.in.exceptions.AccessDeniedException;
-import application.port.repository.AuditRepository;
-import application.port.repository.MeterDataRepository;
-import application.port.repository.MeterTypeRepository;
-import application.port.repository.UserMetersRepository;
+import application.port.repository.*;
 import application.service.exceptions.NoSuchMeterTypeException;
 import application.service.utils.UserValidationUtils;
 import model.exceptions.DuplicateReadingException;
@@ -22,12 +19,14 @@ import java.time.YearMonth;
 import java.util.List;
 
 public class MeterServiceImpl implements MeterService {
+    private final MeterDataReadingRepository meterDataReadingRepository;
     private final MeterDataRepository meterDataRepository;
     private final MeterTypeRepository meterTypeRepository;
     private final UserMetersRepository userMetersRepository;
     private final AuditRepository auditRepository;
 
-    public MeterServiceImpl(MeterDataRepository meterDataRepository, MeterTypeRepository meterTypeRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
+    public MeterServiceImpl(MeterDataReadingRepository meterDataReadingRepository, MeterDataRepository meterDataRepository, MeterTypeRepository meterTypeRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
+        this.meterDataReadingRepository = meterDataReadingRepository;
         this.meterDataRepository = meterDataRepository;
         this.meterTypeRepository = meterTypeRepository;
         this.userMetersRepository = userMetersRepository;
@@ -63,7 +62,7 @@ public class MeterServiceImpl implements MeterService {
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " accessed meters history for user " + username);
         return userMetersRepository.getUserMetersByUsername(username).getMeters()
                 .stream()
-                .map(meter -> new MeterDataDTO(meter.getMeterType(), meter.getAllReadings()))
+                .map(meter -> new MeterDataDTO(meter.getMeterType(), meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings()))
                 .toList();
     }
 
@@ -90,8 +89,8 @@ public class MeterServiceImpl implements MeterService {
         auditRepository.saveAudit(loggedInUser.getUsername(), "User " + loggedInUser.getUsername() + " accessed " + username + "'s readings for " + month + "/" + year);
         return userMetersRepository.getUserMetersByUsername(username).getMeters()
                 .stream()
-                .filter(meter -> meter.getAllReadings().containsKey(readingDate))
-                .map(meter -> new MeterReadingDTO(meter.getMeterType(), readingDate, meter.getAllReadings().get(readingDate)))
+                .filter(meter -> meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings().containsKey(readingDate))
+                .map(meter -> new MeterReadingDTO(meter.getMeterType(), readingDate, meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings().get(readingDate)))
                 .toList();
     }
 
@@ -142,9 +141,8 @@ public class MeterServiceImpl implements MeterService {
                 .findFirst()
                 .orElse(new MeterData(meterType));
 
-        meterData.addReading(new ReadingData(readingValue));
-
         meterDataRepository.putMeterData(meterData);
+        meterDataReadingRepository.putNewReadingByMeterData(meterData, new ReadingData(readingValue));
         userMetersRepository.putUserMeterByUsername(username, meterData);
 
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " wrote meter reading for " + username + " for meter type " + meterType + " with value " + readingValue);

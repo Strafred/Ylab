@@ -35,9 +35,10 @@ public class ConsoleApplication {
         UserController userController = new UserController(userService);
 
 
+        MeterDataReadingRepository meterDataReadingRepository = new InMemoryMeterDataReadingRepository();
         MeterDataRepository meterDataRepository = new InMemoryMeterDataRepository();
         MeterTypeRepository meterTypeRepository = new InMemoryMeterTypeRepository();
-        MeterService meterService = new MeterServiceImpl(meterDataRepository, meterTypeRepository, userMetersRepository, auditRepository);
+        MeterService meterService = new MeterServiceImpl(meterDataReadingRepository, meterDataRepository, meterTypeRepository, userMetersRepository, auditRepository);
         MeterController meterController = new MeterController(meterService);
 
 
