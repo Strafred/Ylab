@@ -10,7 +10,6 @@ import liquibase.Liquibase;
 import liquibase.database.Database;
 import liquibase.database.DatabaseFactory;
 import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.DatabaseException;
 import liquibase.exception.LiquibaseException;
 import liquibase.resource.ClassLoaderResourceAccessor;
 import model.meterdata.MeterType;
@@ -55,11 +54,7 @@ public class ConsoleApplication {
             Liquibase liquibase = new Liquibase("db.changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update();
             System.out.println("Database initialized");
-        } catch (SQLException | DatabaseException e) {
-            throw new RuntimeException(e);
-        } catch (LiquibaseException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | LiquibaseException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
