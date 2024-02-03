@@ -5,10 +5,13 @@ import application.port.in.dto.MeterReadingDTO;
 import application.port.in.exceptions.AccessDeniedException;
 import application.service.exceptions.NoSuchMeterTypeException;
 import model.exceptions.DuplicateReadingException;
+import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongReadingValueException;
+import model.exceptions.WrongUsernameException;
 import model.meterdata.MeterType;
 import model.user.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public interface MeterService {
@@ -16,7 +19,7 @@ public interface MeterService {
      * Получить список доступных типов счетчиков
      * @return список доступных типов счетчиков
      */
-    List<MeterType> getAccessibleMeterTypes();
+    List<MeterType> getAccessibleMeterTypes() throws SQLException;
 
     /**
      * Просмотр истории показаний счетчиков
@@ -25,7 +28,7 @@ public interface MeterService {
      * @return - список показаний счетчиков
      * @throws AccessDeniedException - если текущий пользователь не имеет права просматривать историю показаний счетчиков пользователя
      */
-    List<MeterDataDTO> getMetersHistory(String username, User loggedInUser) throws AccessDeniedException;
+    List<MeterDataDTO> getMetersHistory(String username, User loggedInUser) throws AccessDeniedException, SQLException, WrongUsernameException, WrongPasswordException;
 
     /**
      * Получить показания счетчика за определенный месяц
@@ -36,7 +39,7 @@ public interface MeterService {
      * @return список показаний счетчика
      * @throws AccessDeniedException если авторизованный пользователь не имеет права на просмотр показаний счетчика пользователя
      */
-    List<MeterReadingDTO> getUsersSpecificMonthReadings(int month, int year, String username, User loggedInUser) throws AccessDeniedException;
+    List<MeterReadingDTO> getUsersSpecificMonthReadings(int month, int year, String username, User loggedInUser) throws AccessDeniedException, SQLException, WrongUsernameException, WrongPasswordException;
 
     /**
      * Получить показания счетчика за текущий месяц
@@ -45,7 +48,7 @@ public interface MeterService {
      * @return список показаний счетчика
      * @throws AccessDeniedException если авторизованный пользователь не имеет права на просмотр показаний счетчика пользователя
      */
-    List<MeterReadingDTO> getUsersCurrentMonthReadings(String username, User loggedInUser) throws AccessDeniedException;
+    List<MeterReadingDTO> getUsersCurrentMonthReadings(String username, User loggedInUser) throws AccessDeniedException, WrongUsernameException, SQLException, WrongPasswordException;
 
     /**
      * Записать показание счетчика
@@ -58,7 +61,7 @@ public interface MeterService {
      * @throws AccessDeniedException если авторизованный пользователь не имеет права записывать показания счетчика
      * @throws NoSuchMeterTypeException если тип счетчика не найден
      */
-    void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) throws DuplicateReadingException, WrongReadingValueException, AccessDeniedException, NoSuchMeterTypeException, NoSuchMeterTypeException;
+    void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) throws DuplicateReadingException, WrongReadingValueException, AccessDeniedException, NoSuchMeterTypeException, NoSuchMeterTypeException, SQLException, WrongUsernameException, WrongPasswordException;
 
     /**
      * Добавить новый тип счетчика
@@ -66,5 +69,5 @@ public interface MeterService {
      * @param loggedInUser авторизованный пользователь
      * @throws AccessDeniedException если авторизованный пользователь не имеет права добавлять новый тип счетчика
      */
-    void addNewMeterType(String meterTypeName, User loggedInUser) throws AccessDeniedException;
+    void addNewMeterType(String meterTypeName, User loggedInUser) throws AccessDeniedException, SQLException;
 }

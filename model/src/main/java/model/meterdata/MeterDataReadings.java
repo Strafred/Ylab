@@ -54,6 +54,17 @@ public class MeterDataReadings {
     }
 
     /**
+     * Добавить показание счетчика
+     * @param readingDate дата показания счетчика
+     * @param readingData показание счетчика
+     */
+    public void addReadingByDate(ReadingDate readingDate, ReadingData readingData) throws DuplicateReadingException {
+        if (getAllReadings().putIfAbsent(readingDate, readingData) != null) {
+            throw new DuplicateReadingException("Reading for this month already exists!");
+        }
+    }
+
+    /**
      * Получить все показания счетчика
      * @return все показания счетчика
      */

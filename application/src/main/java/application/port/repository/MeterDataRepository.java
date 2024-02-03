@@ -2,6 +2,7 @@ package application.port.repository;
 
 import model.meterdata.MeterData;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -10,13 +11,16 @@ import java.util.List;
 public interface MeterDataRepository {
     /**
      * Сохранить данные о счетчике
+     *
      * @param meterData данные о счетчике
+     * @param username
+     * @return данные о счетчике
      */
-    void putMeterData(MeterData meterData);
+    MeterData putMeterData(MeterData meterData, String username) throws SQLException;
 
     /**
      * Получить данные о счетчиках
      * @return список данных о счетчиках
      */
-    List<MeterData> getMeterData();
+    List<MeterData> getMeterData() throws SQLException;
 }

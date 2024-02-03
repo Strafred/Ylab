@@ -1,4 +1,4 @@
-package adapter;
+package adapter.inmemory;
 
 import model.user.User;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +32,7 @@ public class InMemoryUserRepositoryTest {
     void saveUser_shouldWork() {
         var inMemoryUserRepository = new InMemoryUserRepository();
         var user = assertDoesNotThrow(() -> new User("test", "test"));
-        inMemoryUserRepository.saveUser(user);
+        inMemoryUserRepository.putUser(user);
 
         assertThat(inMemoryUserRepository.userExists("test")).isTrue();
     }

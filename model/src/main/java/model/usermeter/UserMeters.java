@@ -16,7 +16,7 @@ public class UserMeters {
     /**
      * Идентификатор
      */
-    private String userMetersId;
+    private int userMetersId;
 
     /**
      * Пользователь
@@ -32,7 +32,7 @@ public class UserMeters {
      * @param user пользователь
      */
     public UserMeters(User user) {
-        this.userMetersId = randomUUID().toString();
+        this.userMetersId = randomUUID().hashCode();
         this.user = user;
         this.meters = new ArrayList<>();
     }
@@ -43,7 +43,13 @@ public class UserMeters {
      * @param meters список счетчиков
      */
     public UserMeters(User user, List<MeterData> meters) {
-        this.userMetersId = randomUUID().toString();
+        this.userMetersId = randomUUID().hashCode();
+        this.user = user;
+        this.meters = meters;
+    }
+
+    public UserMeters(int userMetersId, User user, List<MeterData> meters) {
+        this.userMetersId = userMetersId;
         this.user = user;
         this.meters = meters;
     }

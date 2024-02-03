@@ -1,4 +1,4 @@
-package adapter;
+package adapter.inmemory;
 
 import model.meterdata.MeterData;
 import model.meterdata.MeterType;

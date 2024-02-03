@@ -1,4 +1,4 @@
-package adapter;
+package adapter.inmemory;
 
 import model.meterdata.MeterType;
 import org.junit.jupiter.api.DisplayName;

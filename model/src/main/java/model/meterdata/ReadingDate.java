@@ -44,4 +44,12 @@ public class ReadingDate {
         return "year=" + year +
                 ", month=" + month;
     }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
+    }
 }

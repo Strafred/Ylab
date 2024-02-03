@@ -9,19 +9,24 @@
     <changeSet id="004-insert-meter-data" author="strafred">
         <insert tableName="meter_data" schemaName="monitoring_service_schema">
             <column name="meter_type_id" value="1"/>
+            <column name="assigned_to" value="strafred"/>
         </insert>
         <insert tableName="meter_data" schemaName="monitoring_service_schema">
             <column name="meter_type_id" value="2"/>
+            <column name="assigned_to" value="strafred"/>
         </insert>
         <insert tableName="meter_data" schemaName="monitoring_service_schema">
             <column name="meter_type_id" value="3"/>
+            <column name="assigned_to" value="strafred"/>
         </insert>
 
         <insert tableName="meter_data" schemaName="monitoring_service_schema">
             <column name="meter_type_id" value="1"/>
+            <column name="assigned_to" value="user"/>
         </insert>
         <insert tableName="meter_data" schemaName="monitoring_service_schema">
             <column name="meter_type_id" value="2"/>
+            <column name="assigned_to" value="user"/>
         </insert>
     </changeSet>
 </databaseChangeLog>

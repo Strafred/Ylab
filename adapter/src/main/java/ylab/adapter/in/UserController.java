@@ -8,6 +8,8 @@ import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongUsernameException;
 import model.user.User;
 
+import java.sql.SQLException;
+
 /**
  * Контроллер для получения данных о пользователях
  */
@@ -32,6 +34,8 @@ public class UserController {
             System.err.println("Wrong username or password!");
         } catch (UnsafePasswordException e) {
             System.err.println("Unsafe password!");
+        } catch (SQLException e) {
+            System.err.println("SQL exception");
         }
     }
 
@@ -44,7 +48,7 @@ public class UserController {
     public User loginUser(String username, String password) {
         try {
             return userService.loginUser(username, password);
-        } catch (WrongLoginPasswordException e) {
+        } catch (WrongLoginPasswordException | SQLException | WrongUsernameException | WrongPasswordException e) {
             System.err.println("Wrong login or password!");
         }
         return null;

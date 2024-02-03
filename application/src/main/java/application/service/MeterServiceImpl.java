@@ -8,24 +8,31 @@ import application.port.repository.*;
 import application.service.exceptions.NoSuchMeterTypeException;
 import application.service.utils.UserValidationUtils;
 import model.exceptions.DuplicateReadingException;
+import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongReadingValueException;
+import model.exceptions.WrongUsernameException;
 import model.meterdata.MeterData;
 import model.meterdata.MeterType;
 import model.meterdata.ReadingData;
 import model.meterdata.ReadingDate;
 import model.user.User;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Objects;
 
 public class MeterServiceImpl implements MeterService {
+    private final Connection connection;
     private final MeterDataReadingRepository meterDataReadingRepository;
     private final MeterDataRepository meterDataRepository;
     private final MeterTypeRepository meterTypeRepository;
     private final UserMetersRepository userMetersRepository;
     private final AuditRepository auditRepository;
 
-    public MeterServiceImpl(MeterDataReadingRepository meterDataReadingRepository, MeterDataRepository meterDataRepository, MeterTypeRepository meterTypeRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
+    public MeterServiceImpl(Connection connection, MeterDataReadingRepository meterDataReadingRepository, MeterDataRepository meterDataRepository, MeterTypeRepository meterTypeRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
+        this.connection = connection;
         this.meterDataReadingRepository = meterDataReadingRepository;
         this.meterDataRepository = meterDataRepository;
         this.meterTypeRepository = meterTypeRepository;
@@ -39,7 +46,7 @@ public class MeterServiceImpl implements MeterService {
      * @return список типов счетчиков
      */
     @Override
-    public List<MeterType> getAccessibleMeterTypes() {
+    public List<MeterType> getAccessibleMeterTypes() throws SQLException {
         return meterTypeRepository.getMeterTypes();
     }
 
@@ -52,17 +59,32 @@ public class MeterServiceImpl implements MeterService {
      * @throws AccessDeniedException если авторизованный пользователь не имеет доступа к данным пользователя
      */
     @Override
-    public List<MeterDataDTO> getMetersHistory(String username, User loggedInUser) throws AccessDeniedException {
+    public List<MeterDataDTO> getMetersHistory(String username, User loggedInUser) throws AccessDeniedException, SQLException, WrongUsernameException, WrongPasswordException {
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " tries to show meters history for user " + username);
+        connection.commit();
 
         if (!UserValidationUtils.haveAccessToUser(username, loggedInUser)) {
             throw new AccessDeniedException();
         }
 
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " accessed meters history for user " + username);
+        connection.commit();
+
         return userMetersRepository.getUserMetersByUsername(username).getMeters()
                 .stream()
-                .map(meter -> new MeterDataDTO(meter.getMeterType(), meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings()))
+                .map(meter -> {
+                    try {
+                        var readings = meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings();
+                        return new MeterDataDTO(meter.getMeterType(), readings);
+                    } catch (SQLException | DuplicateReadingException e) {
+                        System.err.println("Error while getting meter data readings for meter " + meter.getMeterType() + " for user " + username);
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .toList();
     }
 
@@ -77,8 +99,10 @@ public class MeterServiceImpl implements MeterService {
      * @throws AccessDeniedException если у пользователя нет доступа к запрашиваемому пользователю
      */
     @Override
-    public List<MeterReadingDTO> getUsersSpecificMonthReadings(int month, int year, String username, User loggedInUser) throws AccessDeniedException {
+    public List<MeterReadingDTO> getUsersSpecificMonthReadings(int month, int year, String username, User loggedInUser) throws AccessDeniedException, SQLException, WrongUsernameException, WrongPasswordException {
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(loggedInUser.getUsername(), "User " + loggedInUser.getUsername() + " requested " + username + "'s readings for " + month + "/" + year);
+        connection.commit();
 
         if (!UserValidationUtils.haveAccessToUser(username, loggedInUser)) {
             throw new AccessDeniedException();
@@ -86,11 +110,33 @@ public class MeterServiceImpl implements MeterService {
 
         ReadingDate readingDate = new ReadingDate(year, month);
 
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(loggedInUser.getUsername(), "User " + loggedInUser.getUsername() + " accessed " + username + "'s readings for " + month + "/" + year);
+        connection.commit();
+
         return userMetersRepository.getUserMetersByUsername(username).getMeters()
                 .stream()
-                .filter(meter -> meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings().containsKey(readingDate))
-                .map(meter -> new MeterReadingDTO(meter.getMeterType(), readingDate, meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings().get(readingDate)))
+                .filter(meter -> {
+                    try {
+                        var readings = meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings();
+                        return readings.containsKey(readingDate);
+                    } catch (SQLException | DuplicateReadingException e) {
+                        System.err.println("Error while getting meter data readings for meter " + meter.getMeterType() + " for user " + username);
+                        e.printStackTrace();
+                        return false;
+                    }
+                })
+                .map(meter -> {
+                    try {
+                        var readings = meterDataReadingRepository.getMeterDataReadingsByMeterData(meter).getAllReadings();
+                        return new MeterReadingDTO(meter.getMeterType(), readingDate, readings.get(readingDate));
+                    } catch (SQLException | DuplicateReadingException e) {
+                        System.err.println("Error while getting meter data readings for meter " + meter.getMeterType() + " for user " + username);
+                        e.printStackTrace();
+                        return null;
+                    }
+                })
+                .filter(Objects::nonNull)
                 .toList();
     }
 
@@ -103,7 +149,7 @@ public class MeterServiceImpl implements MeterService {
      * @throws AccessDeniedException если у пользователя нет доступа к запрашиваемому пользователю
      */
     @Override
-    public List<MeterReadingDTO> getUsersCurrentMonthReadings(String username, User loggedInUser) throws AccessDeniedException {
+    public List<MeterReadingDTO> getUsersCurrentMonthReadings(String username, User loggedInUser) throws AccessDeniedException, WrongUsernameException, SQLException, WrongPasswordException {
         YearMonth currentYearMonth = YearMonth.now();
         var currentYear = currentYearMonth.getYear();
         var currentMonth = currentYearMonth.getMonthValue();
@@ -124,8 +170,10 @@ public class MeterServiceImpl implements MeterService {
      * @throws NoSuchMeterTypeException   если тип счетчика не найден
      */
     @Override
-    public void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) throws DuplicateReadingException, WrongReadingValueException, AccessDeniedException, NoSuchMeterTypeException {
+    public void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) throws DuplicateReadingException, WrongReadingValueException, AccessDeniedException, NoSuchMeterTypeException, SQLException, WrongUsernameException, WrongPasswordException {
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " tried to write meter reading for " + username + " for meter type " + meterType + " with value " + readingValue);
+        connection.commit();
 
         if (!UserValidationUtils.haveAccessToUser(username, loggedInUser)) {
             throw new AccessDeniedException();
@@ -141,24 +189,29 @@ public class MeterServiceImpl implements MeterService {
                 .findFirst()
                 .orElse(new MeterData(meterType));
 
-        meterDataRepository.putMeterData(meterData);
+        connection.setAutoCommit(false);
+        meterData = meterDataRepository.putMeterData(meterData, username);
         meterDataReadingRepository.putNewReadingByMeterData(meterData, new ReadingData(readingValue));
         userMetersRepository.putUserMeterByUsername(username, meterData);
-
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " wrote meter reading for " + username + " for meter type " + meterType + " with value " + readingValue);
+        connection.commit();
     }
 
     @Override
-    public void addNewMeterType(String meterTypeName, User loggedInUser) throws AccessDeniedException {
+    public void addNewMeterType(String meterTypeName, User loggedInUser) throws AccessDeniedException, SQLException {
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " tried to add new meter type " + meterTypeName);
+        connection.commit();
 
         if (!UserValidationUtils.isAdmin(loggedInUser)) {
             throw new AccessDeniedException();
         }
 
         var meterType = new MeterType(meterTypeName);
-        meterTypeRepository.addMeterType(meterType);
 
+        connection.setAutoCommit(false);
+        meterTypeRepository.addMeterType(meterType);
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " added new meter type " + meterType);
+        connection.commit();
     }
 }

@@ -14,16 +14,20 @@ import model.usermeter.UserMeters;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 /**
  * Сервис для аутентификации пользователя
  */
 public class UserServiceImpl implements UserService {
+    private final Connection connection;
     private final UserRepository userRepository;
     private final UserMetersRepository userMetersRepository;
     private final AuditRepository auditRepository;
 
-    public UserServiceImpl(UserRepository userRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
+    public UserServiceImpl(Connection connection, UserRepository userRepository, UserMetersRepository userMetersRepository, AuditRepository auditRepository) {
+        this.connection = connection;
         this.userRepository = userRepository;
         this.userMetersRepository = userMetersRepository;
         this.auditRepository = auditRepository;
@@ -36,8 +40,10 @@ public class UserServiceImpl implements UserService {
      * @throws UserAlreadyExistsException если пользователь с таким именем уже существует
      */
     @Override
-    public void registerUser(String username, String password) throws UserAlreadyExistsException, WrongUsernameException, WrongPasswordException, UnsafePasswordException {
+    public void registerUser(String username, String password) throws UserAlreadyExistsException, WrongUsernameException, WrongPasswordException, UnsafePasswordException, SQLException {
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(username, username + " tries to register");
+        connection.commit();
 
         if (userRepository.userExists(username)) {
             throw new UserAlreadyExistsException();
@@ -46,10 +52,12 @@ public class UserServiceImpl implements UserService {
             throw new UnsafePasswordException("Password is too short!");
         }
         User user = new User(username, hashPassword(password));
-        userRepository.saveUser(user);
-        userMetersRepository.saveUserMeters(new UserMeters(user));
 
+        connection.setAutoCommit(false);
+        user = userRepository.putUser(user);
+        userMetersRepository.saveUserMeters(new UserMeters(user));
         auditRepository.saveAudit(username, username + " registered");
+        connection.commit();
     }
 
     /**
@@ -60,8 +68,10 @@ public class UserServiceImpl implements UserService {
      * @throws WrongLoginPasswordException если логин или пароль неверный
      */
     @Override
-    public User loginUser(String username, String password) throws WrongLoginPasswordException {
+    public User loginUser(String username, String password) throws WrongLoginPasswordException, SQLException, WrongUsernameException, WrongPasswordException {
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(username, username + " tries to login");
+        connection.commit();
 
         User user = userRepository.getUser(username);
         if (user == null) {
@@ -71,7 +81,9 @@ public class UserServiceImpl implements UserService {
             throw new WrongLoginPasswordException();
         }
 
+        connection.setAutoCommit(false);
         auditRepository.saveAudit(username, username + " logged in");
+        connection.commit();
         return user;
     }
 

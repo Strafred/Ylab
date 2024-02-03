@@ -11,7 +11,7 @@ public class MeterType {
     /**
      * Идентификатор типа счетчика
      */
-    private final String meterTypeId;
+    private final int meterTypeId;
 
     /**
      * Название типа счетчика
@@ -23,15 +23,33 @@ public class MeterType {
      * @param meterTypeName название типа счетчика
      */
     public MeterType(String meterTypeName) {
-        this.meterTypeId = randomUUID().toString();
+        this.meterTypeId = randomUUID().hashCode();
         this.meterTypeName = meterTypeName;
+    }
+
+    /**
+     * Конструктор
+     * @param meterTypeId идентификатор типа счетчика
+     * @param meterTypeName название типа счетчика
+     */
+    public MeterType(int meterTypeId, String meterTypeName) {
+        this.meterTypeId = meterTypeId;
+        this.meterTypeName = meterTypeName;
+    }
+
+    /**
+     * Получить идентификатор типа счетчика
+     * @return идентификатор типа счетчика
+     */
+    public int getMeterTypeId() {
+        return meterTypeId;
     }
 
     /**
      * Получить название типа счетчика
      * @return название типа счетчика
      */
-    public String getName() {
+    public String getMeterTypeName() {
         return meterTypeName;
     }
 

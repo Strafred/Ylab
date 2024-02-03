@@ -11,7 +11,7 @@ public class MeterData {
     /**
      * Идентификатор счетчика
      */
-    private final String meterId;
+    private int meterDataId;
     /**
      * Тип счетчика
      */
@@ -22,7 +22,12 @@ public class MeterData {
      * @param meterType тип счетчика
      */
     public MeterData(MeterType meterType) {
-        this.meterId = randomUUID().toString();
+        this.meterDataId = randomUUID().hashCode();
+        this.meterType = meterType;
+    }
+
+    public MeterData(int meterDataId, MeterType meterType) {
+        this.meterDataId = meterDataId;
         this.meterType = meterType;
     }
 
@@ -34,16 +39,24 @@ public class MeterData {
         return meterType;
     }
 
+    public int getMeterDataId() {
+        return meterDataId;
+    }
+
+    public void setMeterDataId(int meterId) {
+        this.meterDataId = meterId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MeterData meterData = (MeterData) o;
-        return Objects.equals(meterId, meterData.meterId);
+        return Objects.equals(meterDataId, meterData.meterDataId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(meterId);
+        return Objects.hash(meterDataId);
     }
 }

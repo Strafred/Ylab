@@ -12,7 +12,7 @@ public class User {
     /**
      * Идентификатор пользователя
      */
-    private String userId;
+    private int userId;
     /**
      * Имя пользователя
      */
@@ -32,7 +32,7 @@ public class User {
      * @param encodedPassword зашифрованный пароль
      */
     public User(String username, String encodedPassword) throws WrongUsernameException, WrongPasswordException {
-        this.userId = randomUUID().toString();
+        this.userId = randomUUID().hashCode();
         if (StringUtils.isEmpty(username)) {
             throw new WrongUsernameException("Username cannot be empty!");
         }
@@ -60,6 +60,34 @@ public class User {
         }
         this.encodedPassword = encodedPassword;
         this.role = role;
+    }
+
+    /**
+     * Конструктор
+     * @param id идентификатор пользователя
+     * @param username имя пользователя
+     * @param encodedPassword зашифрованный пароль
+     * @param role роль пользователя
+     */
+    public User(int id, String username, String encodedPassword, UserRole role) throws WrongUsernameException, WrongPasswordException {
+        this.userId = id;
+        if (StringUtils.isEmpty(username)) {
+            throw new WrongUsernameException("Username cannot be empty!");
+        }
+        this.username = username;
+        if (StringUtils.isEmpty(encodedPassword)) {
+            throw new WrongPasswordException("Password cannot be empty!");
+        }
+        this.encodedPassword = encodedPassword;
+        this.role = role;
+    }
+
+    /**
+     * Получить идентификатор пользователя
+     * @return
+     */
+    public int getUserId() {
+        return userId;
     }
 
     /**

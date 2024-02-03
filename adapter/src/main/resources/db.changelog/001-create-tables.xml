@@ -49,6 +49,8 @@
             <column name="meter_type_id" type="int">
                 <constraints foreignKeyName="meter_data_meter_type_id_fk" references="monitoring_service_schema.meter_type(meter_type_id)" nullable="false"/>
             </column>
+            <column name="assigned_to" type="varchar(50)">
+            </column>
         </createTable>
 
         <createTable tableName="meter_data_readings" schemaName="monitoring_service_schema">

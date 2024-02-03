@@ -5,11 +5,14 @@ import application.port.in.dto.MeterDataDTO;
 import application.port.in.dto.MeterReadingDTO;
 import application.port.in.exceptions.AccessDeniedException;
 import application.service.exceptions.NoSuchMeterTypeException;
+import model.exceptions.WrongPasswordException;
+import model.exceptions.WrongUsernameException;
 import model.meterdata.MeterType;
 import model.exceptions.DuplicateReadingException;
 import model.exceptions.WrongReadingValueException;
 import model.user.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
@@ -27,7 +30,12 @@ public class MeterController {
      * @return список доступных типов счетчиков
      */
     public List<MeterType> getAccessibleMeterTypes() {
-        return meterService.getAccessibleMeterTypes();
+        try {
+            return meterService.getAccessibleMeterTypes();
+        } catch (SQLException e) {
+            System.err.println("SQL exception");
+        }
+        return null;
     }
 
     /**
@@ -39,7 +47,7 @@ public class MeterController {
     public List<MeterDataDTO> showMetersHistory(String username, User loggedInUser) {
         try {
             return meterService.getMetersHistory(username, loggedInUser);
-        } catch (AccessDeniedException e) {
+        } catch (AccessDeniedException | SQLException | WrongUsernameException | WrongPasswordException e) {
             System.err.println("Access denied");
         }
         return null;
@@ -54,7 +62,7 @@ public class MeterController {
     public List<MeterReadingDTO> showMonthReadings(String username, User loggedInUser) {
         try {
             return meterService.getUsersCurrentMonthReadings(username, loggedInUser);
-        } catch (AccessDeniedException e) {
+        } catch (AccessDeniedException | WrongUsernameException | SQLException | WrongPasswordException e) {
             System.err.println("Access denied");
         }
         return null;
@@ -71,7 +79,7 @@ public class MeterController {
     public List<MeterReadingDTO> getUsersSpecificMonthReadings(int month, int year, String username, User loggedInUser) {
         try {
             return meterService.getUsersSpecificMonthReadings(month, year, username, loggedInUser);
-        } catch (AccessDeniedException e) {
+        } catch (AccessDeniedException | SQLException | WrongUsernameException | WrongPasswordException e) {
             System.err.println("Access denied");
         }
         return null;
@@ -95,6 +103,12 @@ public class MeterController {
             System.err.println("Access denied");
         } catch (NoSuchMeterTypeException e) {
             System.err.println("No such method type");
+        } catch (WrongUsernameException e) {
+            System.err.println("Wrong username");
+        } catch (SQLException e) {
+            System.err.println("SQL exception");
+        } catch (WrongPasswordException e) {
+            System.err.println("Wrong password");
         }
     }
 
@@ -106,7 +120,7 @@ public class MeterController {
     public void addNewMeterType(String meterTypeName, User loggedInUser) {
         try {
             meterService.addNewMeterType(meterTypeName, loggedInUser);
-        } catch (AccessDeniedException e) {
+        } catch (AccessDeniedException | SQLException e) {
             System.err.println("Access denied");
         }
     }

@@ -17,6 +17,7 @@ import model.user.User;
 import ylab.adapter.in.MeterController;
 import ylab.adapter.in.UserController;
 import ylab.adapter.repository.inmemory.*;
+import ylab.adapter.repository.postgresql.*;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -32,8 +33,19 @@ public class ConsoleApplication {
      */
     private static User loggedInUser;
 
+    /**
+     * Ссылка на базу данных
+     */
     private static String URL = "jdbc:postgresql://localhost:5432/";
+
+    /**
+     * Имя пользователя для подключения к базе данных
+     */
     private static String USER_NAME;
+
+    /**
+     * Пароль для подключения к базе данных
+     */
     private static String PASSWORD;
 
     /**
@@ -46,30 +58,30 @@ public class ConsoleApplication {
         USER_NAME = dotenv.get("POSTGRES_USER");
         PASSWORD = dotenv.get("POSTGRES_PASSWORD");
 
+        Connection connection;
         try {
             Class.forName("org.postgresql.Driver");
-            Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
+            connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
             Database database =
                     DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
             Liquibase liquibase = new Liquibase("db.changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
             liquibase.update();
-            System.out.println("Database initialized");
         } catch (SQLException | LiquibaseException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
-        AuditRepository auditRepository = new InMemoryAuditRepository();
+        AuditRepository auditRepository = new PostgresAuditRepository(connection);
 
-        UserRepository userRepository = new InMemoryUserRepository();
-        UserMetersRepository userMetersRepository = new InMemoryUserMetersRepository();
-        UserService userService = new UserServiceImpl(userRepository, userMetersRepository, auditRepository);
+        UserRepository userRepository = new PostgresUserRepository(connection);
+        UserMetersRepository userMetersRepository = new PostgresUserMetersRepository(connection);
+        UserService userService = new UserServiceImpl(connection, userRepository, userMetersRepository, auditRepository);
         UserController userController = new UserController(userService);
 
 
-        MeterDataReadingRepository meterDataReadingRepository = new InMemoryMeterDataReadingRepository();
-        MeterDataRepository meterDataRepository = new InMemoryMeterDataRepository();
-        MeterTypeRepository meterTypeRepository = new InMemoryMeterTypeRepository();
-        MeterService meterService = new MeterServiceImpl(meterDataReadingRepository, meterDataRepository, meterTypeRepository, userMetersRepository, auditRepository);
+        MeterDataReadingRepository meterDataReadingRepository = new PostgresMeterDataReadingRepository(connection);
+        MeterDataRepository meterDataRepository = new PostgresMeterDataRepository(connection);
+        MeterTypeRepository meterTypeRepository = new PostgresMeterTypeRepository(connection);
+        MeterService meterService = new MeterServiceImpl(connection, meterDataReadingRepository, meterDataRepository, meterTypeRepository, userMetersRepository, auditRepository);
         MeterController meterController = new MeterController(meterService);
 
 
@@ -168,7 +180,7 @@ public class ConsoleApplication {
         System.out.println("Выберите счетчик:");
         int i = 1;
         for (MeterType meterType : meterController.getAccessibleMeterTypes()) {
-            System.out.println(i + ". " + meterType.getName());
+            System.out.println(i + ". " + meterType.getMeterTypeName());
             i++;
         }
 
