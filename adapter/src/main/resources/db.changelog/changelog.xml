@@ -2,35 +2,13 @@
 <databaseChangeLog
         xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
-        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
-        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd
-        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd">
-
-    <changeSet  id="1"  author="strafred">
-        <createTable  tableName="person">
-            <column  name="id"  type="int"  autoIncrement="true">
-                <constraints  primaryKey="true"  nullable="false"/>
-            </column>
-            <column  name="firstname"  type="varchar(50)"/>
-            <column  name="lastname"  type="varchar(50)">
-                <constraints  nullable="false"/>
-            </column>
-            <column  name="state"  type="char(2)"/>
-        </createTable>
-    </changeSet>
-
-    <changeSet  id="2"  author="nvoxland">
-        <addColumn  tableName="person">
-            <column  name="username"  type="varchar(8)"/>
-        </addColumn>
-    </changeSet>
-    <changeSet  id="3"  author="nvoxland">
-        <addLookupTable
-                existingTableName="person"  existingColumnName="state"
-                newTableName="state"  newColumnName="id"  newColumnDataType="char(2)"/>
-    </changeSet>
-
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+        <include file="db.changelog/001-create-tables.xml"/>
+        <include file="/db.changelog/002-insert-users.xml"/>
+        <include file="/db.changelog/003-insert-meter-types.xml"/>
+        <include file="/db.changelog/004-insert-meter-data.xml"/>
+        <include file="/db.changelog/005-insert-meter-data-readings.xml"/>
+        <include file="/db.changelog/006-insert-user-meters.xml"/>
+        <include file="/db.changelog/007-insert-audit.xml"/>
 </databaseChangeLog>

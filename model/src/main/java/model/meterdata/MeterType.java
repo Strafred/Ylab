@@ -16,15 +16,15 @@ public class MeterType {
     /**
      * Название типа счетчика
      */
-    private final String name;
+    private final String meterTypeName;
 
     /**
      * Конструктор
-     * @param name название типа счетчика
+     * @param meterTypeName название типа счетчика
      */
-    public MeterType(String name) {
+    public MeterType(String meterTypeName) {
         this.meterTypeId = randomUUID().toString();
-        this.name = name;
+        this.meterTypeName = meterTypeName;
     }
 
     /**
@@ -32,11 +32,11 @@ public class MeterType {
      * @return название типа счетчика
      */
     public String getName() {
-        return name;
+        return meterTypeName;
     }
 
     public String toString() {
-        return this.name;
+        return this.meterTypeName;
     }
 
     @Override
@@ -44,11 +44,11 @@ public class MeterType {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MeterType meterType = (MeterType) o;
-        return Objects.equals(name, meterType.name);
+        return Objects.equals(meterTypeName, meterType.meterTypeName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(meterTypeName);
     }
 }

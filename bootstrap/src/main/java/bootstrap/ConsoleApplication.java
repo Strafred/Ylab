@@ -5,12 +5,23 @@ import application.port.in.UserService;
 import application.port.repository.*;
 import application.service.MeterServiceImpl;
 import application.service.UserServiceImpl;
+import io.github.cdimascio.dotenv.Dotenv;
+import liquibase.Liquibase;
+import liquibase.database.Database;
+import liquibase.database.DatabaseFactory;
+import liquibase.database.jvm.JdbcConnection;
+import liquibase.exception.DatabaseException;
+import liquibase.exception.LiquibaseException;
+import liquibase.resource.ClassLoaderResourceAccessor;
 import model.meterdata.MeterType;
 import model.user.User;
 import ylab.adapter.in.MeterController;
 import ylab.adapter.in.UserController;
 import ylab.adapter.repository.inmemory.*;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -22,11 +33,36 @@ public class ConsoleApplication {
      */
     private static User loggedInUser;
 
+    private static String URL = "jdbc:postgresql://localhost:5432/";
+    private static String USER_NAME;
+    private static String PASSWORD;
+
     /**
      * Точка входа в приложение
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
+        Dotenv dotenv = Dotenv.load();
+        URL += dotenv.get("POSTGRES_DB");
+        USER_NAME = dotenv.get("POSTGRES_USER");
+        PASSWORD = dotenv.get("POSTGRES_PASSWORD");
+
+        try {
+            Class.forName("org.postgresql.Driver");
+            Connection connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
+            Database database =
+                    DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
+            Liquibase liquibase = new Liquibase("db.changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
+            liquibase.update();
+            System.out.println("Database initialized");
+        } catch (SQLException | DatabaseException e) {
+            throw new RuntimeException(e);
+        } catch (LiquibaseException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         AuditRepository auditRepository = new InMemoryAuditRepository();
 
         UserRepository userRepository = new InMemoryUserRepository();

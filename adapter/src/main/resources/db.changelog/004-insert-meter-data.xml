@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+
+    <changeSet id="004-insert-meter-data" author="strafred">
+        <insert tableName="meter_data" schemaName="monitoring_service_schema">
+            <column name="meter_type_id" value="1"/>
+        </insert>
+        <insert tableName="meter_data" schemaName="monitoring_service_schema">
+            <column name="meter_type_id" value="2"/>
+        </insert>
+        <insert tableName="meter_data" schemaName="monitoring_service_schema">
+            <column name="meter_type_id" value="3"/>
+        </insert>
+
+        <insert tableName="meter_data" schemaName="monitoring_service_schema">
+            <column name="meter_type_id" value="1"/>
+        </insert>
+        <insert tableName="meter_data" schemaName="monitoring_service_schema">
+            <column name="meter_type_id" value="2"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
