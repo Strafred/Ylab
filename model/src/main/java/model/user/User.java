@@ -3,6 +3,8 @@ package model.user;
 import model.exceptions.WrongPasswordException;
 import model.exceptions.WrongUsernameException;
 
+import java.util.Objects;
+
 import static java.util.UUID.randomUUID;
 
 /**
@@ -112,5 +114,18 @@ public class User {
      */
     public UserRole getRole() {
         return role;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return userId == user.userId && Objects.equals(username, user.username) && Objects.equals(encodedPassword, user.encodedPassword) && role == user.role;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId, username, encodedPassword, role);
     }
 }

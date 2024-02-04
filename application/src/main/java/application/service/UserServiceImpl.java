@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
         User user = new User(username, hashPassword(password));
 
         connection.setAutoCommit(false);
-        user = userRepository.putUser(user);
+        user = userRepository.postUser(user);
         userMetersRepository.saveUserMeters(new UserMeters(user));
         auditRepository.saveAudit(username, username + " registered");
         connection.commit();

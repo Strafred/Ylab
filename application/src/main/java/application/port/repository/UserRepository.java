@@ -16,7 +16,7 @@ public interface UserRepository {
      * @param user пользователь
      * @return
      */
-    User putUser(User user) throws SQLException, WrongUsernameException, WrongPasswordException;
+    User postUser(User user) throws SQLException, WrongUsernameException, WrongPasswordException;
     /**
      * Получить пользователя по имени
      * @param username имя пользователя

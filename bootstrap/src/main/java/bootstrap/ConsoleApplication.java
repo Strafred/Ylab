@@ -6,22 +6,13 @@ import application.port.repository.*;
 import application.service.MeterServiceImpl;
 import application.service.UserServiceImpl;
 import io.github.cdimascio.dotenv.Dotenv;
-import liquibase.Liquibase;
-import liquibase.database.Database;
-import liquibase.database.DatabaseFactory;
-import liquibase.database.jvm.JdbcConnection;
-import liquibase.exception.LiquibaseException;
-import liquibase.resource.ClassLoaderResourceAccessor;
 import model.meterdata.MeterType;
 import model.user.User;
 import ylab.adapter.in.MeterController;
 import ylab.adapter.in.UserController;
-import ylab.adapter.repository.inmemory.*;
 import ylab.adapter.repository.postgresql.*;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.Scanner;
 
 /**
@@ -58,17 +49,7 @@ public class ConsoleApplication {
         USER_NAME = dotenv.get("POSTGRES_USER");
         PASSWORD = dotenv.get("POSTGRES_PASSWORD");
 
-        Connection connection;
-        try {
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
-            Database database =
-                    DatabaseFactory.getInstance().findCorrectDatabaseImplementation(new JdbcConnection(connection));
-            Liquibase liquibase = new Liquibase("db.changelog/changelog.xml", new ClassLoaderResourceAccessor(), database);
-            liquibase.update();
-        } catch (SQLException | LiquibaseException | ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        Connection connection = BootstrapUtils.initPostgresConnection(URL, USER_NAME, PASSWORD);
 
         AuditRepository auditRepository = new PostgresAuditRepository(connection);
 

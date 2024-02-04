@@ -17,7 +17,7 @@ public class PostgresUserRepository implements UserRepository {
     }
 
     @Override
-    public User putUser(User user) throws SQLException, WrongUsernameException, WrongPasswordException {
+    public User postUser(User user) throws SQLException, WrongUsernameException, WrongPasswordException {
         String sql = "INSERT INTO monitoring_service_schema.user (username, encoded_password, role) VALUES (?, ?, ?)";
 
         var statement = connection.prepareStatement(sql);

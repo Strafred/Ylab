@@ -17,7 +17,7 @@ public class PostgresMeterDataRepository implements MeterDataRepository {
     }
 
     @Override
-    public MeterData putMeterData(MeterData meterData, String username) throws SQLException {
+    public MeterData postMeterData(MeterData meterData, String username) throws SQLException {
         var sql = "INSERT INTO monitoring_service_schema.meter_data (meter_type_id, assigned_to) VALUES (?, ?)";
         var preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setInt(1, meterData.getMeterType().getMeterTypeId());

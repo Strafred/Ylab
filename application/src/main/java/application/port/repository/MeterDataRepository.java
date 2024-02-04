@@ -16,7 +16,7 @@ public interface MeterDataRepository {
      * @param username
      * @return данные о счетчике
      */
-    MeterData putMeterData(MeterData meterData, String username) throws SQLException;
+    MeterData postMeterData(MeterData meterData, String username) throws SQLException;
 
     /**
      * Получить данные о счетчиках

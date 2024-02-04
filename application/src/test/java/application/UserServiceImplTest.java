@@ -61,7 +61,7 @@ public class UserServiceImplTest {
 
             Mockito.verify(auditRepositoryMock, times(2)).saveAudit(anyString(), anyString());
             Mockito.verify(userRepositoryMock, times(1)).userExists("newUser");
-            Mockito.verify(userRepositoryMock, times(1)).putUser(any(User.class));
+            Mockito.verify(userRepositoryMock, times(1)).postUser(any(User.class));
             Mockito.verify(userMetersRepositoryMock, times(1)).saveUserMeters(any(UserMeters.class));
         });
     }

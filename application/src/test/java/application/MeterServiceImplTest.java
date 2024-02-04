@@ -74,7 +74,7 @@ public class MeterServiceImplTest {
             meterServiceImpl.writeMeterReading(new MeterType("123"), 123, "user", new User("user", "encodedPassword"));
 
             Mockito.verify(auditRepository, Mockito.times(2)).saveAudit(Mockito.any(), Mockito.any());
-            Mockito.verify(meterDataRepository, Mockito.times(1)).putMeterData(Mockito.any(), Mockito.any());
+            Mockito.verify(meterDataRepository, Mockito.times(1)).postMeterData(Mockito.any(), Mockito.any());
             Mockito.verify(userMetersRepository, Mockito.times(1)).putUserMeterByUsername(Mockito.any(), Mockito.any());
         });
     }

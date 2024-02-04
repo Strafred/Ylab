@@ -190,7 +190,7 @@ public class MeterServiceImpl implements MeterService {
                 .orElse(new MeterData(meterType));
 
         connection.setAutoCommit(false);
-        meterData = meterDataRepository.putMeterData(meterData, username);
+        meterData = meterDataRepository.postMeterData(meterData, username);
         meterDataReadingRepository.putNewReadingByMeterData(meterData, new ReadingData(readingValue));
         userMetersRepository.putUserMeterByUsername(username, meterData);
         auditRepository.saveAudit(loggedInUser.getUsername(), loggedInUser.getUsername() + " wrote meter reading for " + username + " for meter type " + meterType + " with value " + readingValue);

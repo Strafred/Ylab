@@ -32,7 +32,7 @@ public class InMemoryUserRepositoryTest {
     void saveUser_shouldWork() {
         var inMemoryUserRepository = new InMemoryUserRepository();
         var user = assertDoesNotThrow(() -> new User("test", "test"));
-        inMemoryUserRepository.putUser(user);
+        inMemoryUserRepository.postUser(user);
 
         assertThat(inMemoryUserRepository.userExists("test")).isTrue();
     }
