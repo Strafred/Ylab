@@ -1,18 +1,23 @@
 package ylab.adapter.in;
 
-import application.port.in.user.AuthenticateUserUseCase;
-import application.port.in.user.exceptions.UserAlreadyExistsException;
-import application.port.in.user.exceptions.WrongLoginPasswordException;
+import application.port.in.UserService;
+import application.port.in.exceptions.UserAlreadyExistsException;
+import application.port.in.exceptions.WrongLoginPasswordException;
+import application.service.exceptions.UnsafePasswordException;
+import model.exceptions.WrongPasswordException;
+import model.exceptions.WrongUsernameException;
 import model.user.User;
+
+import java.sql.SQLException;
 
 /**
  * Контроллер для получения данных о пользователях
  */
 public class UserController {
-    AuthenticateUserUseCase authenticateUserUseCase;
+    UserService userService;
 
-    public UserController(AuthenticateUserUseCase authenticateUserUseCase) {
-        this.authenticateUserUseCase = authenticateUserUseCase;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
 
     /**
@@ -22,9 +27,15 @@ public class UserController {
      */
     public void registerUser(String username, String password) {
         try {
-            authenticateUserUseCase.registerUser(username, password);
+            userService.registerUser(username, password);
         } catch (UserAlreadyExistsException e) {
             System.err.println("User already exists!");
+        } catch (WrongUsernameException | WrongPasswordException e) {
+            System.err.println("Wrong username or password!");
+        } catch (UnsafePasswordException e) {
+            System.err.println("Unsafe password!");
+        } catch (SQLException e) {
+            System.err.println("SQL exception");
         }
     }
 
@@ -36,8 +47,8 @@ public class UserController {
      */
     public User loginUser(String username, String password) {
         try {
-            return authenticateUserUseCase.loginUser(username, password);
-        } catch (WrongLoginPasswordException e) {
+            return userService.loginUser(username, password);
+        } catch (WrongLoginPasswordException | SQLException | WrongUsernameException | WrongPasswordException e) {
             System.err.println("Wrong login or password!");
         }
         return null;

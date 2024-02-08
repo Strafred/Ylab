@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd"
+        logicalFilePath="db/changelog.xml">
+
+    <changeSet id="005-insert-meter-data-readings" author="strafred">
+        <insert tableName="meter_data_readings" schemaName="monitoring_service_schema">
+            <column name="meter_data_id" value="4"/>
+            <column name="reading_date_year" value="2024"/>
+            <column name="reading_date_month" value="1"/>
+            <column name="reading_data" value="100"/>
+        </insert>
+        <insert tableName="meter_data_readings" schemaName="monitoring_service_schema">
+            <column name="meter_data_id" value="4"/>
+            <column name="reading_date_year" value="2024"/>
+            <column name="reading_date_month" value="2"/>
+            <column name="reading_data" value="300"/>
+        </insert>
+
+        <insert tableName="meter_data_readings" schemaName="monitoring_service_schema">
+            <column name="meter_data_id" value="5"/>
+            <column name="reading_date_year" value="2024"/>
+            <column name="reading_date_month" value="1"/>
+            <column name="reading_data" value="10"/>
+        </insert>
+        <insert tableName="meter_data_readings" schemaName="monitoring_service_schema">
+            <column name="meter_data_id" value="5"/>
+            <column name="reading_date_year" value="2024"/>
+            <column name="reading_date_month" value="2"/>
+            <column name="reading_data" value="15"/>
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

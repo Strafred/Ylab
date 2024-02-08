@@ -1,37 +1,28 @@
 package ylab.adapter.in;
 
-import application.port.in.meterdata.GetAccessibleMeterTypesUseCase;
-import application.port.in.meterdata.ShowMetersHistoryUseCase;
-import application.port.in.meterdata.ShowMonthReadingsUseCase;
-import application.port.in.meterdata.WriteMeterReadingUseCase;
-import application.port.in.meterdata.dto.MeterDataDTO;
-import application.port.in.meterdata.dto.MeterReadingDTO;
-import application.port.in.meterdata.exceptions.AccessDeniedException;
-import application.service.meterdata.exceptions.NoSuchMeterTypeException;
+import application.port.in.MeterService;
+import application.port.in.dto.MeterDataDTO;
+import application.port.in.dto.MeterReadingDTO;
+import application.port.in.exceptions.AccessDeniedException;
+import application.service.exceptions.NoSuchMeterTypeException;
+import model.exceptions.WrongPasswordException;
+import model.exceptions.WrongUsernameException;
 import model.meterdata.MeterType;
-import model.meterdata.exceptions.DuplicateReadingException;
-import model.meterdata.exceptions.WrongReadingValueException;
+import model.exceptions.DuplicateReadingException;
+import model.exceptions.WrongReadingValueException;
 import model.user.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 /**
  * Контроллер для работы с данными о счетчиках
  */
 public class MeterController {
-    GetAccessibleMeterTypesUseCase getAccessibleMeterTypesUseCase;
-    ShowMetersHistoryUseCase showMetersHistoryUseCase;
-    ShowMonthReadingsUseCase showMonthReadingsUseCase;
-    WriteMeterReadingUseCase writeMeterReadingUseCase;
+    MeterService meterService;
 
-    public MeterController(GetAccessibleMeterTypesUseCase getAccessibleMeterTypesUseCase,
-                           ShowMetersHistoryUseCase showMetersHistoryUseCase,
-                           ShowMonthReadingsUseCase showMonthReadingsUseCase,
-                           WriteMeterReadingUseCase writeMeterReadingUseCase) {
-        this.getAccessibleMeterTypesUseCase = getAccessibleMeterTypesUseCase;
-        this.showMetersHistoryUseCase = showMetersHistoryUseCase;
-        this.showMonthReadingsUseCase = showMonthReadingsUseCase;
-        this.writeMeterReadingUseCase = writeMeterReadingUseCase;
+    public MeterController(MeterService meterService) {
+        this.meterService = meterService;
     }
 
     /**
@@ -39,7 +30,12 @@ public class MeterController {
      * @return список доступных типов счетчиков
      */
     public List<MeterType> getAccessibleMeterTypes() {
-        return getAccessibleMeterTypesUseCase.getAccessibleMeterTypes();
+        try {
+            return meterService.getAccessibleMeterTypes();
+        } catch (SQLException e) {
+            System.err.println("SQL exception");
+        }
+        return null;
     }
 
     /**
@@ -50,8 +46,8 @@ public class MeterController {
      */
     public List<MeterDataDTO> showMetersHistory(String username, User loggedInUser) {
         try {
-            return showMetersHistoryUseCase.getMetersHistory(username, loggedInUser);
-        } catch (AccessDeniedException e) {
+            return meterService.getMetersHistory(username, loggedInUser);
+        } catch (AccessDeniedException | SQLException | WrongUsernameException | WrongPasswordException e) {
             System.err.println("Access denied");
         }
         return null;
@@ -65,8 +61,8 @@ public class MeterController {
      */
     public List<MeterReadingDTO> showMonthReadings(String username, User loggedInUser) {
         try {
-            return showMonthReadingsUseCase.getUsersCurrentMonthReadings(username, loggedInUser);
-        } catch (AccessDeniedException e) {
+            return meterService.getUsersCurrentMonthReadings(username, loggedInUser);
+        } catch (AccessDeniedException | WrongUsernameException | SQLException | WrongPasswordException e) {
             System.err.println("Access denied");
         }
         return null;
@@ -82,8 +78,8 @@ public class MeterController {
      */
     public List<MeterReadingDTO> getUsersSpecificMonthReadings(int month, int year, String username, User loggedInUser) {
         try {
-            return showMonthReadingsUseCase.getUsersSpecificMonthReadings(month, year, username, loggedInUser);
-        } catch (AccessDeniedException e) {
+            return meterService.getUsersSpecificMonthReadings(month, year, username, loggedInUser);
+        } catch (AccessDeniedException | SQLException | WrongUsernameException | WrongPasswordException e) {
             System.err.println("Access denied");
         }
         return null;
@@ -98,7 +94,7 @@ public class MeterController {
      */
     public void writeMeterReading(MeterType meterType, int readingValue, String username, User loggedInUser) {
         try {
-            writeMeterReadingUseCase.writeMeterReading(meterType, readingValue, username, loggedInUser);
+            meterService.writeMeterReading(meterType, readingValue, username, loggedInUser);
         } catch (DuplicateReadingException e) {
             System.err.println("Duplicate reading");
         } catch (WrongReadingValueException e) {
@@ -107,6 +103,25 @@ public class MeterController {
             System.err.println("Access denied");
         } catch (NoSuchMeterTypeException e) {
             System.err.println("No such method type");
+        } catch (WrongUsernameException e) {
+            System.err.println("Wrong username");
+        } catch (SQLException e) {
+            System.err.println("SQL exception");
+        } catch (WrongPasswordException e) {
+            System.err.println("Wrong password");
+        }
+    }
+
+    /**
+     * Эндпоинт для добавления нового типа счетчика
+     * @param meterTypeName имя нового типа счетчика
+     * @param loggedInUser авторизованный пользователь
+     */
+    public void addNewMeterType(String meterTypeName, User loggedInUser) {
+        try {
+            meterService.addNewMeterType(meterTypeName, loggedInUser);
+        } catch (AccessDeniedException | SQLException e) {
+            System.err.println("Access denied");
         }
     }
 }

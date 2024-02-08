@@ -1,22 +1,18 @@
 package bootstrap;
 
-import application.port.in.meterdata.GetAccessibleMeterTypesUseCase;
-import application.port.in.meterdata.ShowMetersHistoryUseCase;
-import application.port.in.meterdata.ShowMonthReadingsUseCase;
-import application.port.in.meterdata.WriteMeterReadingUseCase;
-import application.port.in.user.AuthenticateUserUseCase;
-import application.port.out.*;
-import application.service.meterdata.GetAccessibleMeterTypesService;
-import application.service.meterdata.ShowMetersHistoryService;
-import application.service.meterdata.ShowMonthReadingsService;
-import application.service.meterdata.WriteMeterReadingService;
-import application.service.user.AuthenticateUserService;
+import application.port.in.MeterService;
+import application.port.in.UserService;
+import application.port.repository.*;
+import application.service.MeterServiceImpl;
+import application.service.UserServiceImpl;
+import io.github.cdimascio.dotenv.Dotenv;
 import model.meterdata.MeterType;
 import model.user.User;
 import ylab.adapter.in.MeterController;
 import ylab.adapter.in.UserController;
-import ylab.adapter.out.*;
+import ylab.adapter.repository.postgresql.*;
 
+import java.sql.Connection;
 import java.util.Scanner;
 
 /**
@@ -29,42 +25,47 @@ public class ConsoleApplication {
     private static User loggedInUser;
 
     /**
+     * Ссылка на базу данных
+     */
+    private static String URL = "jdbc:postgresql://localhost:5432/";
+
+    /**
+     * Имя пользователя для подключения к базе данных
+     */
+    private static String USER_NAME;
+
+    /**
+     * Пароль для подключения к базе данных
+     */
+    private static String PASSWORD;
+
+    /**
      * Точка входа в приложение
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        // Manual DI:
-        // Audit:
-        AuditRepository auditRepository = new InMemoryAuditRepository();
+        Dotenv dotenv = Dotenv.load();
+        URL += dotenv.get("POSTGRES_DB");
+        USER_NAME = dotenv.get("POSTGRES_USER");
+        PASSWORD = dotenv.get("POSTGRES_PASSWORD");
+
+        Connection connection = BootstrapUtils.initPostgresConnection(URL, USER_NAME, PASSWORD);
+
+        AuditRepository auditRepository = new PostgresAuditRepository(connection);
+
+        UserRepository userRepository = new PostgresUserRepository(connection);
+        UserMetersRepository userMetersRepository = new PostgresUserMetersRepository(connection);
+        UserService userService = new UserServiceImpl(connection, userRepository, userMetersRepository, auditRepository);
+        UserController userController = new UserController(userService);
 
 
-        // User Repositories:
-        UserRepository userRepository = new InMemoryUserRepository();
-        UserMetersRepository userMetersRepository = new InMemoryUserMetersRepository();
-
-        // User Use Cases:
-        AuthenticateUserUseCase authenticateUserUseCase = new AuthenticateUserService(userRepository, userMetersRepository, auditRepository);
-
-        // User Controllers:
-        UserController userController = new UserController(authenticateUserUseCase);
+        MeterDataReadingRepository meterDataReadingRepository = new PostgresMeterDataReadingRepository(connection);
+        MeterDataRepository meterDataRepository = new PostgresMeterDataRepository(connection);
+        MeterTypeRepository meterTypeRepository = new PostgresMeterTypeRepository(connection);
+        MeterService meterService = new MeterServiceImpl(connection, meterDataReadingRepository, meterDataRepository, meterTypeRepository, userMetersRepository, auditRepository);
+        MeterController meterController = new MeterController(meterService);
 
 
-        // Meter Repositories:
-        MeterDataRepository meterDataRepository = new InMemoryMeterDataRepository();
-        MeterTypeRepository meterTypeRepository = new InMemoryMeterTypeRepository();
-
-        // Meter Use Cases:
-        GetAccessibleMeterTypesUseCase getAccessibleMeterTypesUseCase = new GetAccessibleMeterTypesService(meterTypeRepository);
-        ShowMetersHistoryUseCase showMetersHistoryUseCase = new ShowMetersHistoryService(userMetersRepository, auditRepository);
-        ShowMonthReadingsUseCase showMonthReadingsUseCase = new ShowMonthReadingsService(userMetersRepository, auditRepository);
-        WriteMeterReadingUseCase writeMeterReadingUseCase = new WriteMeterReadingService(meterDataRepository, userMetersRepository, meterTypeRepository, auditRepository);
-
-
-        // Meter Controllers:
-        MeterController meterController = new MeterController(getAccessibleMeterTypesUseCase, showMetersHistoryUseCase, showMonthReadingsUseCase, writeMeterReadingUseCase);
-
-
-        // Run:
         Scanner scanner = new Scanner(System.in);
         while (true) {
             displayMenu();
@@ -73,6 +74,7 @@ public class ConsoleApplication {
             scanner.nextLine();
 
             switch (choice) {
+                case 0 -> addMeterType(scanner, meterController);
                 case 1 -> registerUser(scanner, userController);
                 case 2 -> loginUser(scanner, userController);
                 case 3 -> writeMeterReading(scanner, meterController);
@@ -83,6 +85,23 @@ public class ConsoleApplication {
                 default -> System.out.println("Неверный выбор. Попробуйте снова.");
             }
         }
+    }
+
+    /**
+     * Добавить новый тип счётчика
+     * @param scanner сканнер для ввода данных
+     * @param meterController контроллер для работы с счетчиками
+     */
+    private static void addMeterType(Scanner scanner, MeterController meterController) {
+        if (loggedInUser == null) {
+            System.out.println("Сначала авторизуйтесь!");
+            return;
+        }
+
+        System.out.println("Введите название типа счетчика:");
+        var meterTypeName = scanner.nextLine();
+
+        meterController.addNewMeterType(meterTypeName, loggedInUser);
     }
 
     /**
@@ -142,7 +161,7 @@ public class ConsoleApplication {
         System.out.println("Выберите счетчик:");
         int i = 1;
         for (MeterType meterType : meterController.getAccessibleMeterTypes()) {
-            System.out.println(i + ". " + meterType.getName());
+            System.out.println(i + ". " + meterType.getMeterTypeName());
             i++;
         }
 
@@ -192,6 +211,7 @@ public class ConsoleApplication {
      * Вывести меню
      */
     private static void displayMenu() {
+        System.out.println("0. Добавить новый тип счетчика (только для администратора)");
         System.out.println("1. Регистрация");
         System.out.println("2. Авторизация");
         System.out.println("3. Подача показания");

@@ -16,4 +16,8 @@ public class UserValidationUtils {
     public static boolean haveAccessToUser(String username, User loggedInUser) {
         return loggedInUser.getUsername().equals(username) || loggedInUser.getRole().equals(UserRole.ADMIN);
     }
+
+    public static boolean isAdmin(User loggedInUser) {
+        return loggedInUser.getRole().equals(UserRole.ADMIN);
+    }
 }

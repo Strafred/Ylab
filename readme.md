@@ -1,3 +1,10 @@
+# TASK 2
+
+### Запуск базы данных:
+```
+docker-compose up
+```
+
 ### Сборка проекта:
 ```
 mvn clean install

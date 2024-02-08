@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+        <include file="db.changelog/001-create-tables.xml"/>
+        <include file="/db.changelog/002-insert-users.xml"/>
+        <include file="/db.changelog/003-insert-meter-types.xml"/>
+        <include file="/db.changelog/004-insert-meter-data.xml"/>
+        <include file="/db.changelog/005-insert-meter-data-readings.xml"/>
+        <include file="/db.changelog/006-insert-user-meters.xml"/>
+        <include file="/db.changelog/007-insert-audit.xml"/>
+</databaseChangeLog>

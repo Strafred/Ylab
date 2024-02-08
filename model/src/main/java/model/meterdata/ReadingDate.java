@@ -9,11 +9,11 @@ public class ReadingDate {
     /**
      * Год
      */
-    int year;
+    private final int year;
     /**
      * Месяц
      */
-    int month;
+    private final int month;
 
     /**
      * Конструктор
@@ -43,5 +43,13 @@ public class ReadingDate {
     public String toString() {
         return "year=" + year +
                 ", month=" + month;
+    }
+
+    public int getYear() {
+        return year;
+    }
+
+    public int getMonth() {
+        return month;
     }
 }

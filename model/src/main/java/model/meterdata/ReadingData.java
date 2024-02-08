@@ -9,7 +9,7 @@ public class ReadingData {
     /**
      * Показание счетчика
      */
-    int value;
+    private final int value;
 
     /**
      * Конструктор
